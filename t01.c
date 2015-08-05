@@ -11,9 +11,9 @@
 
 int main(int argc,char* args[]){
 	FILE *arq=NULL;
-	char c='0';
-	int key=3,i=0,k=0;
-	if((arq=fopen(args[1],"r+b"))==NULL){
+	char key=3,c='0';
+	int i=0,k=0;
+	if((arq=fopen(args[1],"r+"))==NULL){
 		printf("nao foi possivel abrir ( - _ - )\n");
 		exit(0);
 	}
@@ -21,24 +21,27 @@ int main(int argc,char* args[]){
 	//printf("%s\n",args[1]);
 	fseek(arq,0,SEEK_END);
 	i=ftell(arq);	
-	while(i<=k){
+	while(i>k){
 		fread(&c,sizeof(char),1,arq);
-		k++;
-		fseek(arq,-1,SEEK_CUR);
-		printf("%c",c);
-		c=(c+key);
+		fseek(arq,k,SEEK_SET);
+		//printf("%c",c);
+		c=(c+key)%256;
+		//printf("%c",c);
 		fwrite(&c,sizeof(char),1,arq);
+		k++;
 		if(feof(arq)) break;
 	};
-	printf(" (-_-)\n");
+	printf("(-_-)\n");
 	rewind(arq);
 	k=0;
-	while(i<=k){
+	while(i>k){
 		if(feof(arq)) break;
 		fread(&c,sizeof(char),1,arq);
-		printf("%c",c);
+		//printf("%c",c);
 		k++;
 	};
+	printf("(>_<)\n");
 	fclose(arq);
 	return 0;
 }
+
