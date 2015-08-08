@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX 30
 
 /**
  *	Trabalho 1  cifra de cesar + transposição + vigenere + substituição
@@ -9,8 +10,8 @@
 
 int main(int argc,char* args[]){
 	FILE *arq=NULL;
-	char c;
-	int i=0,k=0,key=3,teste=0;
+	char buf[MAX],c;
+	int i=0,k=0,f=0,key=3;
 	if((arq=fopen(args[1],"r+b"))==NULL){
 		printf("nao foi possivel abrir ( - _ - )\n");
 		exit(0);
@@ -19,17 +20,25 @@ int main(int argc,char* args[]){
 	//printf("%s\n",args[1]);
 	fseek(arq,0,SEEK_END);
 	i=ftell(arq);	
-	while(i>k){
+	for(k=0;i>k;k++,f++){
 		fread(&c,sizeof(char),1,arq);
-		fseek(arq,k,SEEK_SET);
-		//printf("%c",c);
-		teste=(int)c+key;
-		printf("%c",c);
-		c=(char)teste;
-		fwrite(&c,sizeof(char),1,arq);
-		k++;
 		if(feof(arq)) break;
+		printf("%c",c);
+		buf[k]=c;
+		if(k+1==MAX){
+			for(f=0;f<MAX;f++){
+				buf[f]+=key;
+			};
+			fseek(arq,-MAX+1,SEEK_CUR);
+			fwrite(buf,sizeof(char),MAX,arq);
+			f=0;
+		};
 	};
+	for(k=0;k<f;k++){
+		buf[k]+=key;
+	};
+	fseek(arq,-k,SEEK_CUR);
+	fwrite(buf,sizeof(char),k,arq);
 	//printf("(-_-)\n");
 	rewind(arq);
 	k=0;
