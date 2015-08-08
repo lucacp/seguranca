@@ -10,9 +10,9 @@
 
 int main(int argc,char* args[]){
 	FILE *arq=NULL;
-	char buf[MAX],c;
+	char buf[MAX]={"\0"},c;
 	int i=0,k=0,f=0,key=3;
-	if((arq=fopen(args[1],"r+b"))==NULL){
+	if((arq=fopen(args[1],"r+"))==NULL){
 		printf("nao foi possivel abrir ( - _ - )\n");
 		exit(0);
 	}
@@ -23,22 +23,26 @@ int main(int argc,char* args[]){
 	for(k=0;i>k;k++,f++){
 		fread(&c,sizeof(char),1,arq);
 		if(feof(arq)) break;
-		printf("%c",c);
+		//printf("%c",c);
 		buf[k]=c;
 		if(k+1==MAX){
 			for(f=0;f<MAX;f++){
 				buf[f]+=key;
 			};
-			fseek(arq,-MAX+1,SEEK_CUR);
+			fseek(arq,1-MAX,SEEK_CUR);
 			fwrite(buf,sizeof(char),MAX,arq);
 			f=0;
+			for(f=0;f<MAX;f++){
+				buf[f]='\0';
+			};
+			fflush(arq);
 		};
 	};
 	for(k=0;k<f;k++){
 		buf[k]+=key;
 	};
-	fseek(arq,-k,SEEK_CUR);
-	fwrite(buf,sizeof(char),k,arq);
+	fseek(arq,1-k,SEEK_CUR);
+	fwrite(buf,sizeof(char),k-1,arq);
 	//printf("(-_-)\n");
 	rewind(arq);
 	k=0;
