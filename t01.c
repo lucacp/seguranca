@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX 11
 
 /**
  *	Trabalho 1  cifra de cesar + transposição + vigenere + substituição
@@ -16,7 +17,7 @@ int main(int argc,char* args[]){
 		exit(0);
 	}
 	if(args[2]!=NULL){
-		key=atoi(args[2]); 		//argumento 2 é a chave, por padrão a chave será +3.
+		key=atoi(args[2]); 		//argumento 2 é a chave, por padrão a chave será +3. para 
 		if(args[3]!=NULL) 		//	argumento 3 é o tipo de criptografia: 'c' para cifra de cesar(cesar é padrão, então se não escrever o 3º argumento será cifra de cesar),
 			tipo=args[3][0]; 	//  't' de transposição, 'v' de vigenere e 's' de subtituição.
 	};
@@ -41,6 +42,22 @@ int main(int argc,char* args[]){
 			break;
 		};
 		case 't':{
+			char mat[key][MAX];
+			int caso=0,col=0;
+			while(ind_arq>ind_atual){
+				if(feof(arq)) break;
+				c[0]=fgetc(arq);
+				printf("%c",c[0]);
+				caso=ind_atual%key;
+				if(caso+1<key)
+					mat[caso][col]=c[0];
+				else if(caso+1==key){
+					mat[caso][col]=c[0];
+					col++;
+				};
+				
+				
+			}
 			
 			break;
 		};
