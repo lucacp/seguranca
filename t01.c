@@ -16,9 +16,9 @@ int main(int argc,char* args[]){
 		exit(0);
 	}
 	if(args[2]!=NULL){
-		key=atoi(args[2]);
-		if(args[3]!=NULL)
-			tipo=args[3][0];
+		key=atoi(args[2]); 		//argumento 2 é a chave, por padrão a chave será +3.
+		if(args[3]!=NULL) 		//	argumento 3 é o tipo de criptografia: 'c' para cifra de cesar(cesar é padrão, então se não escrever o 3º argumento será cifra de cesar),
+			tipo=args[3][0]; 	//  't' de transposição, 'v' de vigenere e 's' de subtituição.
 	};
 	//printf("%s\n",args[0]);
 	//printf("%s\n",args[1]);
