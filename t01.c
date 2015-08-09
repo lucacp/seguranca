@@ -75,7 +75,7 @@ int main(int argc,char* args[]){
 			};
 			char mat[key][MAX];
 			char matD[MAX][key];
-			int caso=0,col=0,colD=0;
+			int caso=0,col=0,colD=0,maxMat=MAX*key,fatMat=0;
 			while(ind_arq>ind_atual){
 				if(feof(arq)) break;
 				c[0]=fgetc(arq);
@@ -91,7 +91,25 @@ int main(int argc,char* args[]){
 					if(caso+1==key)
 						col++;
 				};
-				
+				if(ind_atual+1%maxMat==0){
+					if(arquivo==1){
+						if(dcrpt==1)
+							fwrite(matD,sizeof(char),maxMat,out);
+						else
+							fwrite(mat,sizeof(char),maxMat,out);
+						fflush(out);
+					}
+					else{
+						fseek(arq,maxMat*fatMat,SEEK_SET);
+						if(dcrpt==1)
+							fwrite(matD,sizeof(char),maxMat,arq);
+						else
+							fwrite(mat,sizeof(char),maxMat,arq);
+						fatMat++;
+					};
+					col=0;
+					colD=0;
+				};
 				fflush(arq);
 			};
 			
