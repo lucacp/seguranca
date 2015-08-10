@@ -81,22 +81,22 @@ int main(int argc,char* args[]){
 				if(feof(arq)) break;
 				c[0]=fgetc(arq);
 				//if(ind_arq<MAX_PRINT)
-					printf("%c",c[0]);
+				//	printf("%c",c[0]);
 				caso=ind_atual%key;				
 				if(dcrpt==1){
-					matD[colD][caso]=(c[0]+126)%126;
-					printf("%s",matD[0]);
+					matD[colD][caso]=c[0];
+					printf("%s",matD[colD]);
 					if(caso+1==key)
 						colD++;
 				}else{
-					mat[caso][col]=(c[0]+126)%126;
-					printf("%s\n",mat[0]);
+					mat[caso][col]=c[0];
+					printf("%s\n",mat[caso]);
 					if(caso+1==key)
 						col++;
 				};
 				//fflush(arq);
 				ind_mat++;
-				if(ind_atual+1%maxMat==0){
+				if((ind_atual+1)%maxMat==0){
 					if(arquivo==1){
 						int id=0;
 						for(id=0;id<key;id++){
@@ -131,6 +131,7 @@ int main(int argc,char* args[]){
 			if(ind_mat<maxMat){
 				char idc='p';
 				while(ind_mat<maxMat){
+					caso=ind_mat%key;
 					if(dcrpt==1){
 						matD[colD][caso]=(idc+126)%126;
 						if(caso+1==key)
