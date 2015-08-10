@@ -66,12 +66,12 @@ int main(int argc,char* args[]){
 				exit(0);
 			}
 			else if(key<0){
-				key=key*(-1);
-				if(key==1){
+				key=key*(-1);	
+				dcrpt=1;
+			};
+			if(key==1){
 					printf("\nA cifra de Transicao necessita de uma chave de tamanho maior que 1 uma linha\n");
 					exit(0);
-				};
-				dcrpt=1;
 			};
 			//printf("%d",key);
 			char mat[key][MAX];
@@ -129,14 +129,46 @@ int main(int argc,char* args[]){
 				
 			};
 			if(ind_mat<maxMat){
+				char idc='p';
 				while(ind_mat<maxMat){
 					if(dcrpt==1){
-						
+						matD[colD][caso]=(idc+126)%126;
+						if(caso+1==key)
+							colD++;
+						idc++;
 					}
 					else{
-					
+						mat[caso][col]=(idc+126)%126;
+						if(caso+1==key)
+							col++;
+						idc++;
 					}
+					ind_mat++;
+				};
+				if(arquivo==1){
+					int id=0;
+					for(id=0;id<key;id++){
+						if(dcrpt==1)
+							fwrite(matD[id],sizeof(char)*MAX,1,out);
+						else
+							fwrite(mat[id],sizeof(char)*MAX,1,out);
+						fflush(out);
+					}
+					ind_mat=0;
 				}
+				else{
+					int id=0;
+					for(id=0;id<key;id++){
+						fseek(arq,(MAX)*id,SEEK_SET);
+						if(dcrpt==1)
+							fwrite(matD[id],sizeof(char)*MAX,1,arq);
+						else
+							fwrite(mat[id],sizeof(char)*MAX,1,arq);
+						fflush(arq);
+					};
+					fatMat++;
+					ind_mat=0;
+				};
 			};
 			
 			break;
