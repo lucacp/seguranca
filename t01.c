@@ -26,10 +26,10 @@ int main(int argc,char* args[]){
 				if(!out){
 					printf("nao e possivel escrever este arquivo neste local");
 					exit(0);
-				}
+				};
 				arquivo=1;
-			}
-		}
+			};
+		};
 	};
 	//printf("%s\n",args[0]);
 	//printf("%s\n",args[1]);
@@ -45,7 +45,7 @@ int main(int argc,char* args[]){
 				c[0]=fgetc(arq);
 				if(ind_arq<MAX_PRINT)
 					printf("%c",c[0]);
-				c[0]=(c[0]+(char)key+126)%126;
+				c[0]=(c[0]+(char)key+256)%256;
 				if(arquivo==1){
 					fwrite(c,sizeof(char),1,out);
 					fflush(out);
@@ -53,8 +53,8 @@ int main(int argc,char* args[]){
 				else{
 					fseek(arq,ind_atual,SEEK_SET);
 					fwrite(c,sizeof(char),1,arq);
-					fflush(arq);
 				};
+				fflush(arq);
 				ind_atual++;
 				
 			};
