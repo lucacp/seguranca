@@ -32,12 +32,12 @@ int main(int argc,char* args[]){
 		};
 	};
 	//printf("%s\n",args[0]);
-	//printf("%s\n",args[1]);
+	printf("%s\n",args[1]);
 	fseek(arq,0,SEEK_END);
 	ind_arq=ftell(arq);
 	ind_atual=0;
 	rewind(arq);
-	rewind(out);
+	//rewind(out);
 	switch(tipo){
 		case 'c':{
 			while(ind_arq>ind_atual){
@@ -94,33 +94,31 @@ int main(int argc,char* args[]){
 					if(caso+1==key)
 						col++;
 				};
-				//fflush(arq);
+				fflush(arq);
 				ind_mat++;
 				if((ind_atual+1)%maxMat==0){
-					if(arquivo==1){
-						int id=0;
+					int id=0;
+					if(arquivo==1){	
 						for(id=0;id<key;id++){
 							if(dcrpt==1)
 								fwrite(matD[id],sizeof(char)*MAX,1,out);
 							else
 								fwrite(mat[id],sizeof(char)*MAX,1,out);
 							fflush(out);
-						}
-						ind_mat=0;
+						};	
 					}
 					else{
-						int id=0;
-						for(id=0;id<key;id++){
-							fseek(arq,(MAX)*id,SEEK_SET);
+						for(id=0;id<MAX;id++){
+							fseek(arq,(MAX*id),SEEK_SET);
 							if(dcrpt==1)
-								fwrite(matD[id],sizeof(char)*MAX,1,arq);
+								fwrite(matD[id],sizeof(char)*key,1,arq);
 							else
-								fwrite(mat[id],sizeof(char)*MAX,1,arq);
+								fwrite(mat[id],sizeof(char)*key,1,arq);
 							fflush(arq);
 						};
 						fatMat++;
-						ind_mat=0;
 					};
+					ind_mat=0;
 					col=0;
 					colD=0;
 				};
@@ -175,6 +173,11 @@ int main(int argc,char* args[]){
 			break;
 		};
 		case 'v':{
+			// deixar em função para criptografar e outra para decriptografar
+			if(arquivo==1)
+				vigenere(arq,args[2],out,dcrpt);
+			else
+				vigenereSame(arq,args[2],dcrpt);
 			
 			break;
 		};
@@ -183,7 +186,7 @@ int main(int argc,char* args[]){
 			break;
 		};
 		default:{
-			printf("Opcao escolhida nao corresponde a nenhuma criptografia disponivel!");
+			printf("Opcao escolhida nao corresponde a nenhuma criptografia disponivel!\n");
 			exit(0);
 			break;
 		};
@@ -206,4 +209,9 @@ int main(int argc,char* args[]){
 	
 	return 0;
 }
-
+void vigenere(FILE *arq,char *chave,FILE *out,int dcrpt){
+	
+};
+void vigenereSame(FILE *arq,char *chave,int dcrpt){
+	
+};
