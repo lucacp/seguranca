@@ -62,61 +62,80 @@ int main(int argc,char* args[]){
 		};
 		case 't':{
 			if(key==0){
-				printf("\nA cifra de Transição necessita uma chave que não seja nula\n");
+				printf("\nA cifra de Transicao necessita uma chave que nao seja nula\n");
 				exit(0);
 			}
 			else if(key<0){
-				key*=-1;
+				key=key*(-1);
 				if(key==1){
 					printf("\nA cifra de Transicao necessita de uma chave de tamanho maior que 1 uma linha\n");
 					exit(0);
-				}
+				};
 				dcrpt=1;
 			};
+			//printf("%d",key);
 			char mat[key][MAX];
 			char matD[MAX][key];
-			int caso=0,col=0,colD=0,maxMat=MAX*key,fatMat=0;
+			int caso=0,col=0,colD=0,maxMat=MAX*key,fatMat=0,ind_mat=0;
 			while(ind_arq>ind_atual){
 				if(feof(arq)) break;
 				c[0]=fgetc(arq);
-				if(ind_arq<MAX_PRINT)
+				//if(ind_arq<MAX_PRINT)
 					printf("%c",c[0]);
 				caso=ind_atual%key;				
 				if(dcrpt==1){
-					matD[colD][caso]=c[0];
+					matD[colD][caso]=(c[0]+126)%126;
+					printf("%s",matD[0]);
 					if(caso+1==key)
 						colD++;
 				}else{
-					mat[caso][col]=c[0];
+					mat[caso][col]=(c[0]+126)%126;
+					printf("%s\n",mat[0]);
 					if(caso+1==key)
 						col++;
 				};
-				fflush(arq);
+				//fflush(arq);
+				ind_mat++;
 				if(ind_atual+1%maxMat==0){
 					if(arquivo==1){
-						if(dcrpt==1)
-							fwrite(matD,sizeof(char)*maxMat,1,out);
-						else
-							fwrite(mat,sizeof(char)*maxMat,1,out);
-						fflush(out);
+						int id=0;
+						for(id=0;id<key;id++){
+							if(dcrpt==1)
+								fwrite(matD[id],sizeof(char)*MAX,1,out);
+							else
+								fwrite(mat[id],sizeof(char)*MAX,1,out);
+							fflush(out);
+						}
+						ind_mat=0;
 					}
 					else{
-						fseek(arq,maxMat*fatMat,SEEK_SET);
-						if(dcrpt==1)
-							fwrite(matD,sizeof(char)*maxMat,1,arq);
-						else
-							fwrite(mat,sizeof(char)*maxMat,1,arq);
+						int id=0;
+						for(id=0;id<key;id++){
+							fseek(arq,(MAX)*id,SEEK_SET);
+							if(dcrpt==1)
+								fwrite(matD[id],sizeof(char)*MAX,1,arq);
+							else
+								fwrite(mat[id],sizeof(char)*MAX,1,arq);
+							fflush(arq);
+						};
 						fatMat++;
+						ind_mat=0;
 					};
 					col=0;
 					colD=0;
 				};
 				fflush(arq);
+				ind_atual++;
+				
 			};
-			if(ind_arq<maxMat){
-				int resto=ind_arq%maxMat,ind_minus;
-				for(ind_minus=ind_arq-1;ind_arq-resto-1<ind_minus;ind_minus--){
+			if(ind_mat<maxMat){
+				while(ind_mat<maxMat){
+					if(dcrpt==1){
+						
+					}
+					else{
 					
+					}
 				}
 			};
 			
@@ -149,8 +168,9 @@ int main(int argc,char* args[]){
 			ind_atual++;
 		};
 	printf("(>_<)\n");
-	fclose(arq);
 	fclose(out);
+	fclose(arq);
+	
 	return 0;
 }
 
