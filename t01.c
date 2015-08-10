@@ -91,26 +91,33 @@ int main(int argc,char* args[]){
 					if(caso+1==key)
 						col++;
 				};
+				fflush(arq);
 				if(ind_atual+1%maxMat==0){
 					if(arquivo==1){
 						if(dcrpt==1)
-							fwrite(matD,sizeof(char),maxMat,out);
+							fwrite(matD,sizeof(char)*maxMat,1,out);
 						else
-							fwrite(mat,sizeof(char),maxMat,out);
+							fwrite(mat,sizeof(char)*maxMat,1,out);
 						fflush(out);
 					}
 					else{
 						fseek(arq,maxMat*fatMat,SEEK_SET);
 						if(dcrpt==1)
-							fwrite(matD,sizeof(char),maxMat,arq);
+							fwrite(matD,sizeof(char)*maxMat,1,arq);
 						else
-							fwrite(mat,sizeof(char),maxMat,arq);
+							fwrite(mat,sizeof(char)*maxMat,1,arq);
 						fatMat++;
 					};
 					col=0;
 					colD=0;
 				};
 				fflush(arq);
+			};
+			if(ind_arq<maxMat){
+				int resto=ind_arq%maxMat,ind_minus;
+				for(ind_minus=ind_arq-1;ind_arq-resto-1<ind_minus;ind_minus--){
+					
+				}
 			};
 			
 			break;
@@ -133,7 +140,7 @@ int main(int argc,char* args[]){
 	rewind(arq);
 	rewind(out);
 	ind_atual=0;
-	if(arquivo==0)
+	if(ind_arq<MAX_PRINT)
 		while(ind_arq>ind_atual){
 			if(feof(arq)) break;
 			fread(c,sizeof(char)*1,1,arq);
