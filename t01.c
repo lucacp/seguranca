@@ -174,14 +174,16 @@ int main(int argc,char* args[]){
 		};
 		case 'v':{
 			// deixar em função para criptografar e outra para decriptografar
-			int campo=0,id_key=strlen(args[2]);
+			int campo=0,id_key=strlen(args[2]),chav=0;;
 			while(ind_arq>ind_atual){
 				if(feof(arq)) break;
 				c[0]=fgetc(arq);
 				if(ind_arq<MAX_PRINT)
 					printf("%c",c[0]);
 				campo=ind_atual%id_key;
-				c[0]=(c[0]+args[2][campo]+256)%256;
+				chav=(char)args[2][campo];
+				printf("%c",(char)chav);
+				c[0]=(char)(c[0]+(int)chav+126)%126;
 				if(arquivo==1){
 					fwrite(c,sizeof(char),1,out);
 					fflush(out);
