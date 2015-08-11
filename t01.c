@@ -32,7 +32,7 @@ int main(int argc,char* args[]){
 		};
 	};
 	//printf("%s\n",args[0]);
-	printf("%s\n",args[1]);
+	//printf("%s\n",args[1]);
 	fseek(arq,0,SEEK_END);
 	ind_arq=ftell(arq);
 	ind_atual=0;
@@ -174,11 +174,25 @@ int main(int argc,char* args[]){
 		};
 		case 'v':{
 			// deixar em função para criptografar e outra para decriptografar
-			if(arquivo==1)
-				vigenere(arq,args[2],out,dcrpt);
-			else
-				vigenereSame(arq,args[2],dcrpt);
-			
+			int campo=0,id_key=strlen(args[2]);
+			while(ind_arq>ind_atual){
+				if(feof(arq)) break;
+				c[0]=fgetc(arq);
+				if(ind_arq<MAX_PRINT)
+					printf("%c",c[0]);
+				campo=ind_atual%id_key;
+				c[0]=(c[0]+args[2][campo]+256)%256;
+				if(arquivo==1){
+					fwrite(c,sizeof(char),1,out);
+					fflush(out);
+				}
+				else{
+					fseek(arq,ind_atual,SEEK_SET);
+					fwrite(c,sizeof(char),1,arq);
+				};
+				fflush(arq);
+				ind_atual++;	
+			};
 			break;
 		};
 		case 's':{
@@ -209,9 +223,3 @@ int main(int argc,char* args[]){
 	
 	return 0;
 }
-void vigenere(FILE *arq,char *chave,FILE *out,int dcrpt){
-	
-};
-void vigenereSame(FILE *arq,char *chave,int dcrpt){
-	
-};
