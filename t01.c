@@ -183,7 +183,7 @@ int main(int argc,char* args[]){
 				campo=ind_atual%id_key;
 				chav=(char)args[2][campo];
 				printf("%c",(char)chav);
-				c[0]=(char)(c[0]+(int)chav+126)%126;
+				c[0]=(char)(c[0]+(int)chav+256)%256;
 				if(arquivo==1){
 					fwrite(c,sizeof(char),1,out);
 					fflush(out);
