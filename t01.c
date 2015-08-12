@@ -22,12 +22,14 @@ int main(int argc,char* args[]){
 		if(args[3]!=NULL){ 		//	argumento 3 é o tipo de criptografia: 'c' para cifra de cesar(cesar é padrão, então se não escrever o 3º argumento será cifra de cesar),
 			tipo=args[3][0]; 	//   't' de transposição, 'v' de vigenere e 's' de subtituição. 
 			if(args[4]!=NULL){
-				out=fopen(args[4],"w+b");
-				if(!out){
-					printf("nao e possivel escrever este arquivo neste local");
-					exit(0);
+				if(args[4]!=args[1]){
+					out=fopen(args[4],"w+b");
+					if(!out){
+						printf("nao e possivel escrever este arquivo neste local");
+						exit(0);
+					};
+					arquivo=1;
 				};
-				arquivo=1;
 			};
 		};
 	};
@@ -85,12 +87,14 @@ int main(int argc,char* args[]){
 				caso=ind_atual%key;				
 				if(dcrpt==1){
 					matD[colD][caso]=c[0];
-					printf("%s",matD[colD]);
+					if(ind_arq<MAX_PRINT)
+						printf("%s",matD[colD]);
 					if(caso+1==key)
 						colD++;
 				}else{
 					mat[caso][col]=c[0];
-					printf("%s\n",mat[caso]);
+					if(ind_arq<MAX_PRINT)
+						printf("%s\n",mat[caso]);
 					if(caso+1==key)
 						col++;
 				};
@@ -126,18 +130,18 @@ int main(int argc,char* args[]){
 				ind_atual++;
 				
 			};
-			if(ind_mat<maxMat){
-				char idc='p';
+			if(ind_mat<=maxMat){
+				char idc='a';
 				while(ind_mat<maxMat){
 					caso=ind_mat%key;
 					if(dcrpt==1){
-						matD[colD][caso]=(idc+126)%126;
+						matD[colD][caso]=(idc+256)%256;
 						if(caso+1==key)
 							colD++;
 						idc++;
 					}
 					else{
-						mat[caso][col]=(idc+126)%126;
+						mat[caso][col]=(idc+256)%256;
 						if(caso+1==key)
 							col++;
 						idc++;
@@ -182,7 +186,8 @@ int main(int argc,char* args[]){
 					printf("%c",c[0]);
 				campo=ind_atual%id_key;
 				chav=(char)args[2][campo];
-				printf("%c",(char)chav);
+				if(ind_arq<MAX_PRINT)
+					printf("%c",(char)chav);
 				c[0]=(char)(c[0]+(int)chav+256)%256;
 				if(arquivo==1){
 					fwrite(c,sizeof(char),1,out);
