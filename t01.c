@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #define MAX 10
-#define MAX_PRINT 212
+#define MAX_PRINT 112
+#define KEY_NULL 11
+#define KEY_ONE 12
+#define OKAY 13
 
 /**
  *	Trabalho 1  cifra de cesar + transposição + vigenere + substituição
@@ -11,7 +14,7 @@
 
 int main(int argc,char* args[]){
 	FILE *arq=NULL,*out=NULL;
-	char c[2]=" ",tipo='c';
+	char tipo='c';
 	int ind_arq=0,ind_atual=0,key=3,dcrpt=0,arquivo=0;
 	if((arq=fopen(args[1],"r+b"))==NULL){
 		printf("nao foi possivel abrir ( - _ - )\n");
@@ -37,170 +40,29 @@ int main(int argc,char* args[]){
 	//printf("%s\n",args[1]);
 	fseek(arq,0,SEEK_END);
 	ind_arq=ftell(arq);
-	ind_atual=0;
 	rewind(arq);
 	//rewind(out);
 	switch(tipo){
 		case 'c':{
-			while(ind_arq>ind_atual){
-				if(feof(arq)) break;
-				c[0]=fgetc(arq);
-				if(ind_arq<MAX_PRINT)
-					printf("%c",c[0]);
-				c[0]=(c[0]+(char)key+256)%256;
-				if(arquivo==1){
-					fwrite(c,sizeof(char),1,out);
-					fflush(out);
-				}
-				else{
-					fseek(arq,ind_atual,SEEK_SET);
-					fwrite(c,sizeof(char),1,arq);
-				};
-				fflush(arq);
-				ind_atual++;
-				
-			};
+			cesarCrypt(arq,key,ind_arq,arquivo,out);
 			break;
 		};
 		case 't':{
-			if(key==0){
+			
+			ind_atual=transposicaoCrypt(arq,key,ind_arq,arquivo,out);
+			if(ind_atual==KEY_NULL){
 				printf("\nA cifra de Transicao necessita uma chave que nao seja nula\n");
 				exit(0);
 			}
-			else if(key<0){
-				key=key*(-1);	
-				dcrpt=1;
-			};
-			if(key==1){
-					printf("\nA cifra de Transicao necessita de uma chave de tamanho maior que 1 uma linha\n");
-					exit(0);
-			};
-			//printf("%d",key);
-			char mat[key][MAX];
-			char matD[MAX][key];
-			int caso=0,col=0,colD=0,maxMat=MAX*key,fatMat=0,ind_mat=0;
-			while(ind_arq>ind_atual){
-				if(feof(arq)) break;
-				c[0]=fgetc(arq);
-				//if(ind_arq<MAX_PRINT)
-				//	printf("%c",c[0]);
-				caso=ind_atual%key;				
-				if(dcrpt==1){
-					matD[colD][caso]=c[0];
-					if(ind_arq<MAX_PRINT)
-						printf("%s",matD[colD]);
-					if(caso+1==key)
-						colD++;
-				}else{
-					mat[caso][col]=c[0];
-					if(ind_arq<MAX_PRINT)
-						printf("%s\n",mat[caso]);
-					if(caso+1==key)
-						col++;
-				};
-				fflush(arq);
-				ind_mat++;
-				if((ind_atual+1)%maxMat==0){
-					int id=0;
-					if(arquivo==1){	
-						for(id=0;id<key;id++){
-							if(dcrpt==1)
-								fwrite(matD[id],sizeof(char)*MAX,1,out);
-							else
-								fwrite(mat[id],sizeof(char)*MAX,1,out);
-							fflush(out);
-						};	
-					}
-					else{
-						for(id=0;id<MAX;id++){
-							fseek(arq,(MAX*id),SEEK_SET);
-							if(dcrpt==1)
-								fwrite(matD[id],sizeof(char)*key,1,arq);
-							else
-								fwrite(mat[id],sizeof(char)*key,1,arq);
-							fflush(arq);
-						};
-						fatMat++;
-					};
-					ind_mat=0;
-					col=0;
-					colD=0;
-				};
-				fflush(arq);
-				ind_atual++;
-				
-			};
-			if(ind_mat<=maxMat){
-				char idc='a';
-				while(ind_mat<maxMat){
-					caso=ind_mat%key;
-					if(dcrpt==1){
-						matD[colD][caso]=(idc+256)%256;
-						if(caso+1==key)
-							colD++;
-						idc++;
-					}
-					else{
-						mat[caso][col]=(idc+256)%256;
-						if(caso+1==key)
-							col++;
-						idc++;
-					}
-					ind_mat++;
-				};
-				if(arquivo==1){
-					int id=0;
-					for(id=0;id<key;id++){
-						if(dcrpt==1)
-							fwrite(matD[id],sizeof(char)*MAX,1,out);
-						else
-							fwrite(mat[id],sizeof(char)*MAX,1,out);
-						fflush(out);
-					}
-					ind_mat=0;
-				}
-				else{
-					int id=0;
-					for(id=0;id<key;id++){
-						fseek(arq,(MAX)*id,SEEK_SET);
-						if(dcrpt==1)
-							fwrite(matD[id],sizeof(char)*MAX,1,arq);
-						else
-							fwrite(mat[id],sizeof(char)*MAX,1,arq);
-						fflush(arq);
-					};
-					fatMat++;
-					ind_mat=0;
-				};
-			};
-			
+			else if(ind_atual==KEY_ONE){
+				printf("\nA cifra de Transicao necessita de uma chave de tamanho maior que 1 uma linha\n");
+				exit(0);
+			}
 			break;
 		};
 		case 'v':{
 			// deixar em função para criptografar e outra para decriptografar
-			int campo=0,id_key=strlen(args[2]),chav=0;;
-			while(ind_arq>ind_atual){
-				if(feof(arq)) break;
-				c[0]=fgetc(arq);
-				if(ind_arq<MAX_PRINT)
-					printf("%c",c[0]);
-				campo=ind_atual%id_key;
-				chav=(char)args[2][campo];
-				if(ind_arq<MAX_PRINT)
-					printf("%c",(char)chav);
-				c[0]=(char)(c[0]+(int)chav+256)%256;
-				if(arquivo==1){
-					fwrite(c,sizeof(char),1,out);
-					fflush(out);
-				}
-				else{
-					fseek(arq,ind_atual,SEEK_SET);
-					fwrite(c,sizeof(char),1,arq);
-				};
-				fflush(arq);
-				ind_atual++;	
-			};
-			break;
+			vigenereCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
 		};
 		case 's':{
 			
@@ -230,3 +92,163 @@ int main(int argc,char* args[]){
 	
 	return 0;
 }
+
+void cesarCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
+	char c[2]=" ";
+	int ind_atual=0;
+	while(ind_arq>ind_atual){
+		if(feof(arq)) break;
+		c[0]=fgetc(arq);
+		if(ind_arq<MAX_PRINT)
+			printf("%c",c[0]);
+		c[0]=(c[0]+(char)key+256)%256;
+		if(arquivo==1){
+			fwrite(c,sizeof(char),1,out);
+			fflush(out);
+		}
+		else{
+			fseek(arq,ind_atual,SEEK_SET);
+			fwrite(c,sizeof(char),1,arq);
+		};
+		fflush(arq);
+		ind_atual++;
+		
+	};
+};
+int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
+	int dcrpt=0;
+	if(key==0){
+		return KEY_NULL;
+	}
+	else if(key<0){
+		key=key*(-1);	
+		dcrpt=1;
+	};
+	if(key==1){
+			return KEY_ONE;
+	};
+	//printf("%d",key);
+	char mat[key][MAX];
+	char matD[MAX][key];
+	int ind_atual=0,caso=0,col=0,colD=0,maxMat=MAX*key,fatMat=0,ind_mat=0;
+	while(ind_arq>ind_atual){
+		if(feof(arq)) break;
+		c[0]=fgetc(arq);
+		//if(ind_arq<MAX_PRINT)
+		//	printf("%c",c[0]);
+		caso=ind_atual%key;				
+		if(dcrpt==1){
+			matD[colD][caso]=c[0];
+			if(ind_arq<MAX_PRINT)
+				printf("%s",matD[colD]);
+			if(caso+1==key)
+				colD++;
+		}else{
+			mat[caso][col]=c[0];
+			if(ind_arq<MAX_PRINT)
+				printf("%s\n",mat[caso]);
+			if(caso+1==key)
+				col++;
+		};
+		fflush(arq);
+		ind_mat++;
+		if((ind_atual+1)%maxMat==0){
+			int id=0;
+			if(arquivo==1){	
+				for(id=0;id<key;id++){
+					if(dcrpt==1)
+						fwrite(matD[id],sizeof(char)*MAX,1,out);
+					else
+						fwrite(mat[id],sizeof(char)*MAX,1,out);
+					fflush(out);
+				};	
+			}
+			else{
+				for(id=0;id<MAX;id++){
+					fseek(arq,(MAX*id),SEEK_SET);
+					if(dcrpt==1)
+						fwrite(matD[id],sizeof(char)*key,1,arq);
+					else
+						fwrite(mat[id],sizeof(char)*key,1,arq);
+					fflush(arq);
+				};
+				fatMat++;
+			};
+			ind_mat=0;
+			col=0;
+			colD=0;
+		};
+		fflush(arq);
+		ind_atual++;
+		
+	};
+	if(ind_mat<=maxMat){
+		char idc='a';
+		while(ind_mat<maxMat){
+			caso=ind_mat%key;
+			if(dcrpt==1){
+				matD[colD][caso]=(idc+256)%256;
+				if(caso+1==key)
+					colD++;
+				idc++;
+			}
+			else{
+				mat[caso][col]=(idc+256)%256;
+				if(caso+1==key)
+					col++;
+				idc++;
+			}
+			ind_mat++;
+		};
+		if(arquivo==1){
+			int id=0;
+			for(id=0;id<key;id++){
+				if(dcrpt==1)
+					fwrite(matD[id],sizeof(char)*MAX,1,out);
+				else
+					fwrite(mat[id],sizeof(char)*MAX,1,out);
+				fflush(out);
+			}
+			ind_mat=0;
+		}
+		else{
+			int id=0;
+			for(id=0;id<key;id++){
+				fseek(arq,(MAX)*id,SEEK_SET);
+				if(dcrpt==1)
+					fwrite(matD[id],sizeof(char)*MAX,1,arq);
+				else
+					fwrite(mat[id],sizeof(char)*MAX,1,arq);
+				fflush(arq);
+			};
+			fatMat++;
+			ind_mat=0;
+		};
+	};
+	return OKAY
+};
+void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt){
+	int campo=0,id_key=strlen(key),chav=0;;
+	while(ind_arq>ind_atual){
+		if(feof(arq)) break;
+		c[0]=fgetc(arq);
+		if(ind_arq<MAX_PRINT)
+			printf("%c",c[0]);
+		campo=ind_atual%id_key;
+		chav=(char)key[campo];
+		if(ind_arq<MAX_PRINT)
+			printf("%c",(char)chav);
+		c[0]=(char)(c[0]+(int)chav+256)%256;
+		if(arquivo==1){
+			fwrite(c,sizeof(char),1,out);
+			fflush(out);
+		}
+		else{
+			fseek(arq,ind_atual,SEEK_SET);
+			fwrite(c,sizeof(char),1,arq);
+		};
+		fflush(arq);
+		ind_atual++;	
+	};
+	break;
+};
