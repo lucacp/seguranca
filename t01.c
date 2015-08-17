@@ -68,11 +68,12 @@ int main(int argc,char* args[]){
 			if(args[3][1]=='d')
 				dcrpt=1;
 			vigenereCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
+			break;
 		};
 		case 's':{
 			if(args[3][1]=='d')
 				dcrpt=1;
-			subtituicaoCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
+			//subtituicaoCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
 			break;
 		};
 		default:{
@@ -124,8 +125,8 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 			return KEY_ONE;
 	};
 	//printf("%d",key);
-	char mat[key][MAX];
-	char matD[MAX][key];
+	char mat[key*MAX];
+	//char matD[MAX*key];
 	int ind_atual=0,caso=0,col=0,colD=0,maxMat=MAX*key,fatMat=0,ind_mat=0;
 	while(ind_arq>ind_atual){
 		if(feof(arq)) break;
@@ -134,40 +135,29 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 		//	printf("%c",c[0]);
 		caso=ind_atual%key;				
 		if(dcrpt==1){
-			matD[colD][caso]=c[0];
-			if(ind_arq<MAX_PRINT)
-				printf("%s",matD[colD]);
+			mat[colD*key+caso]=c[0];
+			//if(ind_arq<MAX_PRINT)
+			//	printf("%s",matD[colD]);
 			if(caso+1==key)
 				colD++;
 		}else{
-			mat[caso][col]=c[0];
-			if(ind_arq<MAX_PRINT)
-				printf("%s\n",mat[caso]);
+			mat[caso*MAX+col]=c[0];
+			//if(ind_arq<MAX_PRINT)
+				//printf("%s\n",mat[caso]);
 			if(caso+1==key)
 				col++;
 		};
 		fflush(arq);
 		ind_mat++;
 		if((ind_atual+1)%maxMat==0){
-			int id=0;
 			if(arquivo==1){	
-				for(id=0;id<key;id++){
-					if(dcrpt==1)
-						fwrite(matD[id],sizeof(char)*MAX,1,out);
-					else
-						fwrite(mat[id],sizeof(char)*MAX,1,out);
-					fflush(out);
-				};	
+				fwrite(mat,sizeof(char)*maxMat,1,out);
+				fflush(out);	
 			}
 			else{
-				for(id=0;id<MAX;id++){
-					fseek(arq,(MAX*id),SEEK_SET);
-					if(dcrpt==1)
-						fwrite(matD[id],sizeof(char)*key,1,arq);
-					else
-						fwrite(mat[id],sizeof(char)*key,1,arq);
-					fflush(arq);
-				};
+				fseek(arq,(maxMat*fatMat),SEEK_SET);
+				fwrite(mat,sizeof(char)*maxMat,1,arq);
+				fflush(arq);
 				fatMat++;
 			};
 			ind_mat=0;
@@ -178,18 +168,18 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 		ind_atual++;
 		
 	};
-	if(ind_mat<=maxMat){
-		char idc='a';
+	if(ind_mat<maxMat){
+		char idc='i';
 		while(ind_mat<maxMat){
 			caso=ind_mat%key;
 			if(dcrpt==1){
-				matD[colD][caso]=(idc+256)%256;
+				mat[colD*key+caso]=(idc+256)%256;
 				if(caso+1==key)
 					colD++;
 				idc++;
 			}
 			else{
-				mat[caso][col]=(idc+256)%256;
+				mat[caso*MAX+col]=(idc+256)%256;
 				if(caso+1==key)
 					col++;
 				idc++;
@@ -197,26 +187,14 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 			ind_mat++;
 		};
 		if(arquivo==1){
-			int id=0;
-			for(id=0;id<key;id++){
-				if(dcrpt==1)
-					fwrite(matD[id],sizeof(char)*MAX,1,out);
-				else
-					fwrite(mat[id],sizeof(char)*MAX,1,out);
-				fflush(out);
-			}
+			fwrite(mat,sizeof(char)*maxMat,1,out);
+			fflush(out);
 			ind_mat=0;
 		}
 		else{
-			int id=0;
-			for(id=0;id<key;id++){
-				fseek(arq,(MAX)*id,SEEK_SET);
-				if(dcrpt==1)
-					fwrite(matD[id],sizeof(char)*MAX,1,arq);
-				else
-					fwrite(mat[id],sizeof(char)*MAX,1,arq);
-				fflush(arq);
-			};
+			fseek(arq,maxMat*fatMat,SEEK_SET);
+			fwrite(mat,sizeof(char)*maxMat,1,arq);
+			fflush(arq);
 			fatMat++;
 			ind_mat=0;
 		};
@@ -251,16 +229,34 @@ void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcr
 		fflush(arq);
 		ind_atual++;	
 	};
-	break;
 };
 void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt){
-	char c[2]=" ";
-	int campo=1,id_key=strlen(key),chav=0;
-	for (campo = 1; campo < id_key; ++campo ){
-		for (chav = 0; chav < campo; ++chav ){
-			if(key[campo]==key[chav]&&campo<id_key)
+	//char c[2]=" ",bytes[256]="                                                                                                                                                                                                                                                               ";
+	int campo=1,id_key=strlen(key),chav=0,ind_atual=0;
+	for (campo = 1; campo < id_key ; ++campo){
+		for ( chav = 0 ; chav < campo ; ++chav ){
+			if(key[campo]==key[chav]&&campo<id_key){
 				key[campo]=key[campo+1];
+				--id_key;
+			};
 		};
 	};
-	
+	for( campo = 0, chav=0 ; campo < 256 ; campo++ ){
+		if( campo < id_key){
+		//	bytes[campo]=key[campo];
+		//	bytes[(int)key[campo]]=campo;
+		}
+		//else if(bytes[campo]==' ')
+		{
+			//bytes[campo]=chav;
+			chav++;
+			
+		};
+	};
+	while(ind_arq>ind_atual){
+		if(feof(arq)) break;
+		//c[0]=fgetc(arq);
+		
+		ind_atual++;
+	};
 };
