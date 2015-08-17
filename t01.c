@@ -11,6 +11,10 @@
  *	Trabalho 1  cifra de cesar + transposição + vigenere + substituição
  * 
  **/
+void cesarCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out);
+int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out);
+void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt);
+void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt);
 
 int main(int argc,char* args[]){
 	FILE *arq=NULL,*out=NULL;
@@ -22,8 +26,8 @@ int main(int argc,char* args[]){
 	}
 	if(args[2]!=NULL){
 		key=atoi(args[2]); 		//argumento 2 é a chave, por padrão a chave será +3. para 
-		if(args[3]!=NULL){ 		//	argumento 3 é o tipo de criptografia: 'c' para cifra de cesar(cesar é padrão, então se não escrever o 3º argumento será cifra de cesar),
-			tipo=args[3][0]; 	//   't' de transposição, 'v' de vigenere e 's' de subtituição. 
+		if(args[3]!=NULL){ 		// argumento 3 é o tipo de criptografia: 'c' para cifra de cesar(cesar é padrão, então se não escrever o 3º argumento em diante será a cifra de cesar),
+			tipo=args[3][0]; 	// 't' de transposição, 'v' de vigenere e 's' de subtituição.(para vigenere e substituição para decriptofrafar é necessário um 'd' junto com 'v' ou 's') 
 			if(args[4]!=NULL){
 				if(args[4]!=args[1]){
 					out=fopen(args[4],"w+b");
@@ -48,7 +52,6 @@ int main(int argc,char* args[]){
 			break;
 		};
 		case 't':{
-			
 			ind_atual=transposicaoCrypt(arq,key,ind_arq,arquivo,out);
 			if(ind_atual==KEY_NULL){
 				printf("\nA cifra de Transicao necessita uma chave que nao seja nula\n");
@@ -62,10 +65,14 @@ int main(int argc,char* args[]){
 		};
 		case 'v':{
 			// deixar em função para criptografar e outra para decriptografar
+			if(args[3][1]=='d')
+				dcrpt=1;
 			vigenereCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
 		};
 		case 's':{
-			
+			if(args[3][1]=='d')
+				dcrpt=1;
+			subtituicaoCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
 			break;
 		};
 		default:{
@@ -74,19 +81,7 @@ int main(int argc,char* args[]){
 			break;
 		};
 	}
-	//printf("(-_-)\n");
-	rewind(arq);
-	rewind(out);
-	ind_atual=0;
-	if(ind_arq<MAX_PRINT)
-		while(ind_arq>ind_atual){
-			if(feof(arq)) break;
-			fread(c,sizeof(char)*1,1,arq);
-			if(ind_arq<MAX_PRINT)
-				printf("%c",c[0]);
-			ind_atual++;
-		};
-	printf("(>_<)\n");
+	printf("( ° 3 ° )\n");
 	fclose(out);
 	fclose(arq);
 	
@@ -116,6 +111,7 @@ void cesarCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 	};
 };
 int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
+	char c[2]=" ";
 	int dcrpt=0;
 	if(key==0){
 		return KEY_NULL;
@@ -225,10 +221,11 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 			ind_mat=0;
 		};
 	};
-	return OKAY
+	return OKAY;
 };
 void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt){
-	int campo=0,id_key=strlen(key),chav=0;;
+	char c[2]=" ";
+	int campo=0,id_key=strlen(key),chav=0,ind_atual=0;
 	while(ind_arq>ind_atual){
 		if(feof(arq)) break;
 		c[0]=fgetc(arq);
@@ -236,6 +233,10 @@ void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcr
 			printf("%c",c[0]);
 		campo=ind_atual%id_key;
 		chav=(char)key[campo];
+		if (dcrpt==1)
+		{
+			chav=chav*-1;
+		};
 		if(ind_arq<MAX_PRINT)
 			printf("%c",(char)chav);
 		c[0]=(char)(c[0]+(int)chav+256)%256;
@@ -251,4 +252,15 @@ void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcr
 		ind_atual++;	
 	};
 	break;
+};
+void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt){
+	char c[2]=" ";
+	int campo=1,id_key=strlen(key),chav=0;
+	for (campo = 1; campo < id_key; ++campo ){
+		for (chav = 0; chav < campo; ++chav ){
+			if(key[campo]==key[chav]&&campo<id_key)
+				key[campo]=key[campo+1];
+		};
+	};
+	
 };
