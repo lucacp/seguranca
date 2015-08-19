@@ -73,7 +73,7 @@ int main(int argc,char* args[]){
 		case 's':{
 			if(args[3][1]=='d')
 				dcrpt=1;
-			//subtituicaoCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
+			substituicaoCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
 			break;
 		};
 		default:{
@@ -204,32 +204,55 @@ void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcr
 	};
 };
 void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt){
-	//char c[2]=" ",bytes[256]="                                                                                                                                                                                                                                                               ";
-	int campo=1,id_key=strlen(key),chav=0,ind_atual=0;
-	for (campo = 1; campo < id_key ; ++campo){
-		for ( chav = 0 ; chav < campo ; ++chav ){
-			if(key[campo]==key[chav]&&campo<id_key){
-				key[campo]=key[campo+1];
-				--id_key;
+	char c[2]=" ",bytes[256]="                                                                                                                                                                                                                                                               ";
+	int campo=1,id_key=strlen(key),chav=0,digito=0,ind_atual=0;
+	for (campo = 1,chav=0; campo < id_key ; ++campo,chav=0){
+		for( chav = 0 ; chav < campo ; chav++ ){
+			if(key[campo]==key[chav]){
+				for( chav = campo; chav+1 < id_key ; chav++ )
+					key[campo] = key[campo+1];
+				id_key--;
+				chav=0;
 			};
 		};
 	};
-	for( campo = 0, chav=0 ; campo < 256 ; campo++ ){
+	for( campo = 0, chav=0, digito=0 ; campo < 256 ; campo++ ){
 		if( campo < id_key){
-		//	bytes[campo]=key[campo];
-		//	bytes[(int)key[campo]]=campo;
+			bytes[campo]=key[campo];
 		}
-		//else if(bytes[campo]==' ')
-		{
-			//bytes[campo]=chav;
-			chav++;
-			
+		else if(bytes[campo]==' '){
+			bytes[campo]=digito;
+			digito++;
+		}
+		else{
+			for( chav = 0 ; chav < campo ; chav++){
+				if(bytes[chav]==digito){
+					digito++;
+				};
+			};
+			bytes[campo]=digito;
+			digito++;
+		};
+	};
+	if(dcrpt==1){
+		for(campo=0;campo<256;campo++){
+			bytes[campo]*=(-1);
 		};
 	};
 	while(ind_arq>ind_atual){
 		if(feof(arq)) break;
-		//c[0]=fgetc(arq);
-		
+		c[0]=fgetc(arq);
+		campo=(c[0]+256)%256;
+		c[0]=bytes[campo];
+		if(arquivo==1){
+			fwrite(c,sizeof(char),1,out);
+			fflush(out);
+		}
+		else{
+			fseek(arq,ind_atual,SEEK_SET);
+			fwrite(c,sizeof(char),1,arq);
+		};
+		fflush(arq);
 		ind_atual++;
 	};
 };
