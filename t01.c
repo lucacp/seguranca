@@ -124,6 +124,8 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 	resto=ind_arq%key;
 	tamMat=ind_arq+resto;
 	tamLin=ind_arq/key;
+	if(resto!=0)
+		tamLin++;
 	//printf("%d",key);
 	char mat[tamMat];
 	//char matD[MAX*key];
@@ -133,14 +135,16 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 		c[0]=fgetc(arq);
 		//if(ind_arq<MAX_PRINT)
 		//	printf("%c",c[0]);
-		caso=ind_atual%key;				
+						
 		if(dcrpt==1){
+			caso=ind_atual%tamLin;
 			mat[key*caso+colD]=c[0];
 			//if(ind_arq<MAX_PRINT)
 			//	printf("%s",mat);
-			if(caso+1==key)
+			if(caso+1==tamLin)
 				colD++;
 		}else{
+			caso=ind_atual%key;
 			mat[caso*tamLin+col]=c[0];
 			//if(ind_arq<MAX_PRINT)
 				//printf("%s\n",mat[caso]);
