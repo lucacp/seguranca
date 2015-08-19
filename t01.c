@@ -113,7 +113,7 @@ void cesarCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 };
 int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 	char c[2]=" ";
-	int dcrpt=0;
+	int dcrpt=0,resto=0,tamMat,tamLin=0;
 	if(key==0){
 		return KEY_NULL;
 	}
@@ -121,13 +121,13 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 		key=key*(-1);	
 		dcrpt=1;
 	};
-	if(key==1){
-			return KEY_ONE;
-	};
+	resto=ind_arq%key;
+	tamMat=ind_arq+resto;
+	tamLin=ind_arq/key;
 	//printf("%d",key);
-	char mat[key*MAX];
+	char mat[tamMat];
 	//char matD[MAX*key];
-	int ind_atual=0,caso=0,col=0,colD=0,maxMat=MAX*key,fatMat=0,ind_mat=0;
+	int ind_atual=0,caso=0,col=0,colD=0,ind_mat=0;
 	while(ind_arq>ind_atual){
 		if(feof(arq)) break;
 		c[0]=fgetc(arq);
@@ -135,69 +135,38 @@ int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out){
 		//	printf("%c",c[0]);
 		caso=ind_atual%key;				
 		if(dcrpt==1){
-			mat[colD*key+caso]=c[0];
+			mat[key*caso+colD]=c[0];
 			//if(ind_arq<MAX_PRINT)
-			//	printf("%s",matD[colD]);
+			//	printf("%s",mat);
 			if(caso+1==key)
 				colD++;
 		}else{
-			mat[caso*MAX+col]=c[0];
+			mat[caso*tamLin+col]=c[0];
 			//if(ind_arq<MAX_PRINT)
 				//printf("%s\n",mat[caso]);
 			if(caso+1==key)
 				col++;
 		};
 		fflush(arq);
-		ind_mat++;
-		if((ind_atual+1)%maxMat==0){
-			if(arquivo==1){	
-				fwrite(mat,sizeof(char)*maxMat,1,out);
-				fflush(out);	
-			}
-			else{
-				fseek(arq,(maxMat*fatMat),SEEK_SET);
-				fwrite(mat,sizeof(char)*maxMat,1,arq);
-				fflush(arq);
-				fatMat++;
-			};
-			ind_mat=0;
-			col=0;
-			colD=0;
-		};
-		fflush(arq);
 		ind_atual++;
-		
+		ind_mat++;
 	};
-	if(ind_mat<maxMat){
-		char idc='i';
-		while(ind_mat<maxMat){
-			caso=ind_mat%key;
-			if(dcrpt==1){
-				mat[colD*key+caso]=(idc+256)%256;
-				if(caso+1==key)
-					colD++;
-				idc++;
-			}
-			else{
-				mat[caso*MAX+col]=(idc+256)%256;
-				if(caso+1==key)
-					col++;
-				idc++;
-			}
-			ind_mat++;
+	if(resto!=0){
+		char idc=0;
+		int i;
+		for( i = 0 ; i < resto ; i++ ){
+			mat[ind_mat]=idc;
+			idc++;
 		};
-		if(arquivo==1){
-			fwrite(mat,sizeof(char)*maxMat,1,out);
-			fflush(out);
-			ind_mat=0;
-		}
-		else{
-			fseek(arq,maxMat*fatMat,SEEK_SET);
-			fwrite(mat,sizeof(char)*maxMat,1,arq);
-			fflush(arq);
-			fatMat++;
-			ind_mat=0;
-		};
+	};
+	if(arquivo==1){
+		fwrite(mat,sizeof(char)*tamMat,1,out);
+		fflush(out);
+	}
+	else{
+		fseek(arq,0,SEEK_SET);
+		fwrite(mat,sizeof(char)*tamMat,1,arq);
+		fflush(arq);
 	};
 	return OKAY;
 };
