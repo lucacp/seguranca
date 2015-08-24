@@ -15,6 +15,7 @@ void cesarCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out);
 int transposicaoCrypt(FILE *arq,int key,int ind_arq,int arquivo,FILE *out);
 void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt);
 void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt);
+int ComparacaoArquivo(FILE *arq1,int ind_arq,FILE *arq2);
 
 int main(int argc,char* args[]){
 	FILE *arq=NULL,*out=NULL;
@@ -28,9 +29,12 @@ int main(int argc,char* args[]){
 		key=atoi(args[2]); 		//argumento 2 é a chave, por padrão a chave será +3. para 
 		if(args[3]!=NULL){ 		// argumento 3 é o tipo de criptografia: 'c' para cifra de cesar(cesar é padrão, então se não escrever o 3º argumento em diante será a cifra de cesar),
 			tipo=args[3][0]; 	// 't' de transposição, 'v' de vigenere e 's' de subtituição.(para vigenere e substituição para decriptofrafar é necessário um 'd' junto com 'v' ou 's') 
-			if(args[4]!=NULL){
+			if(args[4]!=NULL){	// 'a' é para comparação de dois arquivos um criptografado e outro descriptografado, para achar a chave de césar
 				if(args[4]!=args[1]){
-					out=fopen(args[4],"w+b");
+					if(tipo!='a')
+						out=fopen(args[4],"w+b");
+					else
+						out=fopen(args[4],"rb");
 					if(!out){
 						printf("nao e possivel escrever este arquivo neste local");
 						exit(0);
@@ -74,6 +78,12 @@ int main(int argc,char* args[]){
 			if(args[3][1]=='d')
 				dcrpt=1;
 			substituicaoCrypt(arq,args[2],ind_arq,arquivo,out,dcrpt);
+			break;
+		};
+		case 'a':{
+			int chave=0;
+			chave=ComparacaoArquivo(arq,ind_arq,out);
+			printf(" %d\n",chave);
 			break;
 		};
 		default:{
@@ -205,8 +215,8 @@ void vigenereCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcr
 };
 void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int dcrpt){
 	char c[2]=" ",bytes[256]="                                                                                                                                                                                                                                                               ";
-	int campo=1,id_key=strlen(key),chav=0,digito=0,ind_atual=0;
-	for (campo = 1,chav=0; campo < id_key ; ++campo,chav=0){
+	int campo=1,id_key=strlen(key),digito=0,ind_atual=0;
+	/*for (campo = 1,chav=0; campo < id_key ; ++campo,chav=0){
 		for( chav = 0 ; chav < campo ; chav++ ){
 			if(key[campo]==key[chav]){
 				for( chav = campo; chav+1 < id_key ; chav++ )
@@ -215,33 +225,62 @@ void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int
 				chav=0;
 			};
 		};
-	};
-	for( campo = 0, chav=0, digito=0 ; campo < 256 ; campo++ ){
-		if( campo < id_key){
+	};*/
+	for( campo = 0, digito=0 ; campo < 256 ; campo++ ){
+		if(dcrpt==1){
+			if( campo < id_key){
+				bytes[campo]=campo;
+				bytes[(int)key[campo]]=key[campo];
+			}
+			else if(bytes[campo]==' '){
+				if(bytes[digito]==' '){
+					bytes[campo]=campo;
+					bytes[digito]=digito;
+					digito++;
+				}else{
+					while(digito<256){
+						++digito;
+						if(bytes[digito]==' '){
+							bytes[campo]=campo;
+							bytes[digito]=digito;
+							digito++;
+							break;
+						}
+					};
+				};
+			}
+		}
+		else if( campo < id_key){
 			bytes[campo]=key[campo];
+			bytes[(int)key[campo]]=campo;
 		}
 		else if(bytes[campo]==' '){
-			bytes[campo]=digito;
-			digito++;
-		}
-		else{
-			for( chav = 0 ; chav < campo ; chav++){
-				if(bytes[chav]==digito){
-					digito++;
+			if(bytes[digito]==' '){
+				bytes[campo]=digito;
+				bytes[digito]=campo;
+				digito++;
+			}else{
+				while(digito<256){
+					++digito;
+					if(bytes[digito]==' '){
+						bytes[campo]=digito;
+						bytes[digito]=campo;
+						digito++;
+						break;
+					}
 				};
 			};
-			bytes[campo]=digito;
-			digito++;
 		};
 	};
-	if(dcrpt==1){
+	/*if(dcrpt==1){
 		for(campo=0;campo<256;campo++){
 			bytes[campo]*=(-1);
 		};
-	};
+	};*/
 	while(ind_arq>ind_atual){
 		if(feof(arq)) break;
 		c[0]=fgetc(arq);
+		//printf("%d",c[0]);
 		campo=(c[0]+256)%256;
 		c[0]=bytes[campo];
 		if(arquivo==1){
@@ -255,4 +294,31 @@ void substituicaoCrypt(FILE *arq,char *key,int ind_arq,int arquivo,FILE *out,int
 		fflush(arq);
 		ind_atual++;
 	};
+};
+int ComparacaoArquivo(FILE *arq1,int ind_arq,FILE *arq2){
+	int chave_atual=0,chave_ant=0,ind_atual=0,alterado=0;
+	char c1=' ',c2=' ';
+	while(ind_arq>ind_atual){	
+		chave_ant=chave_atual;
+		c1=fgetc(arq1);
+		c2=fgetc(arq2);
+		fflush(arq1);
+		fflush(arq2);
+		chave_atual=(c1-c2+256)%256;
+		//printf("%d",chave_atual);
+		if(chave_atual==chave_ant){
+			alterado--;
+		}else
+			alterado++;
+		if(c2-chave_atual==c1){
+			printf("%c",c2-chave_atual);
+		}
+		else if(c2+chave_atual==c1){
+			printf("%c",c2+chave_atual);
+		}
+		ind_atual++;
+		
+	};
+	printf("\nalterado: %d \n",alterado); //muito positivo: muita variação, muito negativo: é cesar key-->chave_atual
+	return chave_ant;
 };
