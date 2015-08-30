@@ -25,7 +25,7 @@
 	int ComparacaoCifraCesar(FILE *arq1,int ind_arq,FILE *arq2);
 	void comparacaoCifraVigenere(FILE *arq1,int ind_arq,FILE *arq2,char *chave);
 	int comparacaoCifraSubstituicao(FILE *arq1,int ind_arq,FILE *arq2,char *chave);
- 
+	int comparacaoCifraTransposicao(FILE *arq1,int ind_arq1,FILE *arq2);
  
 int main(int argc,char* args[]){
 	FILE *arq=NULL,*out=NULL;
@@ -111,7 +111,7 @@ int main(int argc,char* args[]){
 				printf("%s",chave_key);
 			}
 			else if(typ=='t'){
-		//		chave=comparacaoCifraTransposicao(arq,ind_arq,out);
+				chave=comparacaoCifraTransposicao(arq,ind_arq,out);
 				printf(" %d\n",chave);
 			}
 			else if(typ=='s'){
@@ -381,29 +381,41 @@ int comparacaoCifraTransposicao(FILE *arq1,int ind_arq1,FILE *arq2){
 	 * o primeiro character está sempre no inicio do arquivo, o que resta descobrir é o segundo em diante
 	 * após o encontro do 3º - 4º character você encontra a chave desejada!
 	 * */
-	char base[5];
-	int ind_arq2=0,chave_min=0,difer_ant=0,difer_atual=0,ind_atual=0,base_atual=1;
+	char base[ind_arq1];
+	int ind_arq2=0,chave_min=1,difer_atual=0,ind_atual=0,base_atual=1,poss_key=0,possTamLin=1,maxLin=0,minLin=0;
 	fseek(arq2,0,SEEK_END);
 	ind_arq2=ftell(arq2);
 	rewind(arq2);
 	char volta[ind_arq2];
-	if(ind_arq1<ind_arq2)
-		chave_min=ind_arq2-ind_arq1;
-	fread(base,sizeof(char),4,arq1);
+	if(ind_arq1<ind_arq2){
+		chave_min+=ind_arq2-ind_arq1;
+		for(ind_atual=chave_min-1;(ind_arq1%ind_atual)!=(chave_min-1);ind_atual++)
+			if((ind_arq1%(ind_atual+1))==(chave_min-1))
+				break;
+		poss_key=ind_atual;
+		possTamLin=ind_arq2/poss_key;
+	};
+	maxLin=ind_arq2/chave_min;
+	minLin=ind_arq1%chave_min;
+	if(possTamLin==1)
+		possTamLin=chave_min;
+	fread(base,sizeof(char),ind_arq1,arq1);
 	fflush(arq1);
 	fread(volta,sizeof(char),ind_arq2,arq2);
 	fflush(arq2);
+	ind_atual=0;
+	
 	while(ind_atual<ind_arq2){
 		if(volta[ind_atual]==base[base_atual]){
-			if(difer_ant==difer_atual&&base_atual>2)
-				break;
-			if(base_atual>1){
-				difer_ant=difer_atual;
+			difer_atual=ind_atual/base_atual;
+			if(difer_atual>minLin&&difer_atual<=maxLin){
+				possTamLin=difer_atual;
+				if(volta[ind_atual+possTamLin]==base[base_atual+1])
+					break;
 			}
-			difer_atual=ind_atual-base_atual-1;
-			base_atual++;
-		}	
+		}
 		ind_atual++;
 	};
-	return difer_atual;
+	poss_key=ind_arq2/possTamLin;
+	return poss_key;
 }
