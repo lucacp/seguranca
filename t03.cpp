@@ -56,6 +56,7 @@ int main(int argc,char* args[]){
 		out.get(c);
 		dicty[ind_dic]=c;
 		ind_atual++;
+		out.sync();
 	};
 	switch(tipo){
 		case 'c':{
@@ -69,20 +70,19 @@ int main(int argc,char* args[]){
 			};
 			break;
 		};
-		case 'v':{
-			
-			//vigenereCrypt(base,,ind_arq,teste);
-			result=checkDict(teste,dictionary);
-			break;
-		};
 		case 't':{
 			key=1;
-			while(result<total){
+			while(result<total&&key<ind_arq){
 				transposicaoCrypt(base,key,ind_arq,teste);
 				result=checkDict(teste,dictionary);
 				key++;
 			};
 			printf("Cifra de Transposição\nChave:%d\n",key);
+			break;
+		};
+		case 'v':{
+			//vigenereCrypt(base,,ind_arq,teste);
+			result=checkDict(teste,dictionary);
 			break;
 		};
 	};
