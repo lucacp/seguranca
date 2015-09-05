@@ -18,13 +18,13 @@ using namespace std;
 	void transposicaoCrypt(char *base,int key,int ind_arq,char *teste);
 	void vigenereCrypt(char *base,char *key,int ind_arq,char *teste);
 	int checkDict(char *teste,std::vector<std::string> dic);
-
+	void inserirDic(char *dicty,vector<string> dictionary);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL;
 	std::fstream out;
 	char tipo=0;
-	int ind_arq=0,ind_atual=0,key=1,result=0,total=0,ind_dic=0;
+	int ind_arq=0,key=1,result=0,total=0,ind_dic=0;
 	if((arq=fopen(args[1],"r+b"))==NULL){
 		printf("nao foi possivel abrir ( - _ - )\n");
 		exit(0);
@@ -47,17 +47,14 @@ int main(int argc,char* args[]){
 	fread(base,sizeof(char),ind_arq,arq);
 	fflush(arq);
 	fclose(arq);
-	std::vector<std::string> dictionary;
+	vector<string> dictionary;
 	out.seekg(0,out.end);
 	ind_dic=out.tellg();
 	out.seekg(0,out.beg);
-	char dicty[ind_dic],c=0;
-	while(ind_atual<ind_dic){
-		out.get(c);
-		dicty[ind_dic]=c;
-		ind_atual++;
-		out.sync();
-	};
+	char dicty[ind_dic];
+	out.get(dicty,ind_dic);
+	out.sync();
+	inserirDic(dicty,dictionary);
 	switch(tipo){
 		case 'c':{
 			for(key=1;key<CHARACTERES;key++){
@@ -131,6 +128,33 @@ void vigenereCrypt(char *base,char *key,int ind_arq,char *teste){
 	};
 };
 int checkDict(char *teste,std::vector<std::string> dic){
-	
-	return 0;
+	string texto=teste;
+	int ind_tex=strlen(teste),ind_atual=0,pos=0,len=0,ind_vec=0,result=0;
+	while(ind_atual<ind_tex){
+		
+		ind_atual++;
+	}
+	return result;
+}
+void inserirDic(char *dicty,vector<string> dictionary){
+	string dic=dicty;
+	int ind_dic=0,ind_atual=0,pos=0,len=0,ind_vec=0;
+	ind_dic=strlen(dicty);
+	while(ind_atual<ind_dic){
+		if(dicty[ind_atual]==' '||dicty[ind_atual]=='\n'){
+			len=ind_atual-pos;
+			
+			for(ind_vec=0;ind_vec<(int)dictionary.size();ind_vec++){
+				if(dictionary[ind_vec].compare(dic.substr(pos,len))==0){
+					len=0;
+					break;
+				}
+			};
+			if( len > 0 )
+				dictionary.push_back(dic.substr(pos,len));
+			pos=ind_atual+1;
+		}
+		ind_atual++;
+	};
+
 }
