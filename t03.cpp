@@ -21,17 +21,16 @@ using namespace std;
 	void inserirDic(char *dicty,vector<string> dictionary);
 	
 int main(int argc,char* args[]){
-	FILE *arq=NULL;
-	std::fstream out;
+	FILE *arq=NULL, *out=NULL;
 	char tipo=0;
-	int ind_arq=0,key=1,result=0,total=0,ind_dic=0;
+	int ind_arq=0,key=1,result=0,ind_dic=0;
 	if((arq=fopen(args[1],"r+b"))==NULL){
 		printf("nao foi possivel abrir ( - _ - )\n");
 		exit(0);
 	}
 	if(args[2]!=NULL){
-		out.open(args[2],std::fstream::in | std::fstream::out | std::fstream::app);
-		if(!out.is_open()){
+		out=fopen(args[2],"r+b");
+		if(!out){
 			printf("nao e possivel abrir ( - _ - )\n");
 			exit(0);
 		};
@@ -48,28 +47,33 @@ int main(int argc,char* args[]){
 	fflush(arq);
 	fclose(arq);
 	vector<string> dictionary;
-	out.seekg(0,out.end);
-	ind_dic=out.tellg();
-	out.seekg(0,out.beg);
+	fseek(out,0,SEEK_END);
+	ind_dic=ftell(out);
+	rewind(out);
+	cout << ind_dic<<endl;
 	char dicty[ind_dic];
-	out.get(dicty,ind_dic);
-	out.sync();
+	fread(dicty,sizeof(char),ind_dic,out);
+	//cout << dicty<<endl;
 	inserirDic(dicty,dictionary);
+	unsigned int ind_atual=0;
+	for(ind_atual=0;ind_atual<dictionary.size();ind_atual++)
+		cout << dictionary[ind_atual]<<endl;
 	switch(tipo){
 		case 'c':{
-			for(key=1;key<CHARACTERES;key++){
+			for(key=1;key<CHARACTERES;key++){			
 				cesarCrypt(base,key,ind_arq,teste);
 				result=checkDict(teste,dictionary);
-				if(result > total){
+				
+				if(result > OKAY){
 					printf("Cifra de Cesar\nChave:%d\n",key);
 					break;
-				}
+				};
 			};
 			break;
 		};
 		case 't':{
 			key=1;
-			while(result<total&&key<ind_arq){
+			while(result<OKAY&&key<ind_arq){
 				transposicaoCrypt(base,key,ind_arq,teste);
 				result=checkDict(teste,dictionary);
 				key++;
@@ -84,15 +88,18 @@ int main(int argc,char* args[]){
 		};
 	};
 	
-	out.close();
+	fclose(out);
 	return 0;
 }
+// 1º fazer heuristica com letras solitarias com dicionario = texto original, 2º passo fazer com que este programa funcione para duplas e triplas, 3º passo  
+
 void cesarCrypt(char *base,int key,int ind_arq,char *teste){
 	int ind_atual=0;
 	while(ind_arq>ind_atual){
-		teste[ind_atual]=(base[ind_atual]+key+CHARACTERES)%CHARACTERES;
+		teste[ind_atual]=(base[ind_atual]-key+CHARACTERES)%CHARACTERES;
 		ind_atual++;
 	};
+//	printf("( * - X*)\n");
 };
 void transposicaoCrypt(char *base,int key,int ind_arq,char *teste){
 	int resto=0,tamLin=0;
@@ -127,31 +134,33 @@ void vigenereCrypt(char *base,char *key,int ind_arq,char *teste){
 		ind_atual++;
 	};
 };
-int checkDict(char *teste,std::vector<std::string> dic){
-	string texto=teste;
-	int ind_tex=strlen(teste),ind_atual=0,pos=0,len=0,ind_vec=0,result=0;
+int checkDict(char *teste,vector<string> dic){
+	string texto(teste);
+	int ind_tex=strlen(teste),ind_atual=0,pos=0,len=0,result=0;
+	unsigned int ind_vec=0;
 	while(ind_atual<ind_tex){
-		
+		if(teste[ind_atual]==' '||teste[ind_atual]=='\n'||teste[ind_atual]=='.'||teste[ind_atual]==','){
+			len=ind_atual-pos;
+			for(ind_vec=0;ind_vec<dic.size();ind_vec++){
+				if(dic.at(ind_vec).compare(texto.substr(pos,len))==0){
+					result++;
+				};
+			};
+			pos=ind_atual+1;
+		};
 		ind_atual++;
-	}
+	};
+	//cout << result;
 	return result;
 }
 void inserirDic(char *dicty,vector<string> dictionary){
-	string dic=dicty;
-	int ind_dic=0,ind_atual=0,pos=0,len=0,ind_vec=0;
+	string dic(dicty);
+	int ind_dic=0,ind_atual=0,pos=0,len=0;
 	ind_dic=strlen(dicty);
 	while(ind_atual<ind_dic){
 		if(dicty[ind_atual]==' '||dicty[ind_atual]=='\n'){
 			len=ind_atual-pos;
-			
-			for(ind_vec=0;ind_vec<(int)dictionary.size();ind_vec++){
-				if(dictionary[ind_vec].compare(dic.substr(pos,len))==0){
-					len=0;
-					break;
-				}
-			};
-			if( len > 0 )
-				dictionary.push_back(dic.substr(pos,len));
+			dictionary.push_back(dic.substr(pos,len));
 			pos=ind_atual+1;
 		}
 		ind_atual++;
