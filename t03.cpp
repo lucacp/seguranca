@@ -17,8 +17,8 @@ using namespace std;
 	void cesarCrypt(char *base,int key,int ind_arq,char *teste);
 	void transposicaoCrypt(char *base,int key,int ind_arq,char *teste);
 	void vigenereCrypt(char *base,char *key,int ind_arq,char *teste);
-	int checkDict(char *teste,std::vector<std::string> dic);
-	void inserirDic(char *dicty,vector<string> dictionary);
+	int checkDict(char *teste,std::vector<std::string>* dic);
+	void inserirDic(char *dicty,vector<string>* dictionary);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL, *out=NULL;
@@ -54,7 +54,7 @@ int main(int argc,char* args[]){
 	char dicty[ind_dic];
 	fread(dicty,sizeof(char),ind_dic,out);
 	//cout << dicty<<endl;
-	inserirDic(dicty,dictionary);
+	inserirDic(dicty,&dictionary);
 	unsigned int ind_atual=0;
 	for(ind_atual=0;ind_atual<dictionary.size();ind_atual++)
 		cout << dictionary[ind_atual]<<endl;
@@ -62,12 +62,12 @@ int main(int argc,char* args[]){
 		case 'c':{
 			for(key=1;key<CHARACTERES;key++){			
 				cesarCrypt(base,key,ind_arq,teste);
-				result=checkDict(teste,dictionary);
-				
+				result=checkDict(teste,&dictionary);
+				//cout << result<<endl;
 				if(result > OKAY){
 					printf("Cifra de Cesar\nChave:%d\n",key);
 					break;
-				};
+				}
 			};
 			break;
 		};
@@ -75,7 +75,7 @@ int main(int argc,char* args[]){
 			key=1;
 			while(result<OKAY&&key<ind_arq){
 				transposicaoCrypt(base,key,ind_arq,teste);
-				result=checkDict(teste,dictionary);
+				result=checkDict(teste,&dictionary);
 				key++;
 			};
 			printf("Cifra de Transposição\nChave:%d\n",key);
@@ -83,7 +83,7 @@ int main(int argc,char* args[]){
 		};
 		case 'v':{
 			//vigenereCrypt(base,,ind_arq,teste);
-			result=checkDict(teste,dictionary);
+			result=checkDict(teste,&dictionary);
 			break;
 		};
 	};
@@ -134,15 +134,15 @@ void vigenereCrypt(char *base,char *key,int ind_arq,char *teste){
 		ind_atual++;
 	};
 };
-int checkDict(char *teste,vector<string> dic){
+int checkDict(char *teste,vector<string>* dic){
 	string texto(teste);
 	int ind_tex=strlen(teste),ind_atual=0,pos=0,len=0,result=0;
 	unsigned int ind_vec=0;
 	while(ind_atual<ind_tex){
-		if(teste[ind_atual]==' '||teste[ind_atual]=='\n'||teste[ind_atual]=='.'||teste[ind_atual]==','){
+		if(teste[ind_atual]==' '||teste[ind_atual]=='\n'){
 			len=ind_atual-pos;
-			for(ind_vec=0;ind_vec<dic.size();ind_vec++){
-				if(dic.at(ind_vec).compare(texto.substr(pos,len))==0){
+			for(ind_vec=0;ind_vec<dic->size();ind_vec++){
+				if(dic->at(ind_vec).compare(texto.substr(pos,len))==0){
 					result++;
 				};
 			};
@@ -153,17 +153,17 @@ int checkDict(char *teste,vector<string> dic){
 	//cout << result;
 	return result;
 }
-void inserirDic(char *dicty,vector<string> dictionary){
+void inserirDic(char *dicty,vector<string>* dictionary){
 	string dic(dicty);
 	int ind_dic=0,ind_atual=0,pos=0,len=0;
 	ind_dic=strlen(dicty);
 	while(ind_atual<ind_dic){
 		if(dicty[ind_atual]==' '||dicty[ind_atual]=='\n'){
 			len=ind_atual-pos;
-			dictionary.push_back(dic.substr(pos,len));
+			dictionary->push_back(dic.substr(pos,len));
 			pos=ind_atual+1;
 		}
 		ind_atual++;
-	};
+	}
 
 }
