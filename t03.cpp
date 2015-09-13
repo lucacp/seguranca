@@ -7,6 +7,7 @@
 #define MAX 10
 #define OKAY 13
 #define CHARACTERES 256
+#define OKAYT 5000
 
 /**
  * Trabalho 3 ataque força bruta com dicionario
@@ -55,9 +56,9 @@ int main(int argc,char* args[]){
 	fread(dicty,sizeof(char),ind_dic,out);
 	//cout << dicty<<endl;
 	inserirDic(dicty,&dictionary);
-	unsigned int ind_atual=0;
+	/*unsigned int ind_atual=0;
 	for(ind_atual=0;ind_atual<dictionary.size();ind_atual++)
-		cout << dictionary[ind_atual]<<endl;
+		cout << dictionary[ind_atual]<<endl;*/
 	switch(tipo){
 		case 'c':{
 			for(key=1;key<CHARACTERES;key++){			
@@ -73,12 +74,19 @@ int main(int argc,char* args[]){
 		};
 		case 't':{
 			key=1;
-			while(result<OKAY&&key<ind_arq){
+			while(key<ind_arq){
 				transposicaoCrypt(base,key,ind_arq,teste);
 				result=checkDict(teste,&dictionary);
+				
+				if(result > OKAY){
+					printf("Cifra de Transposicao\nChave:%d\n",key);
+					
+					break;
+				};
 				key++;
 			};
-			printf("Cifra de Transposição\nChave:%d\n",key);
+			//printf("Cifra de Transposição\nChave:%d\n",key);
+			printf("Resultado:%d\n",result);
 			break;
 		};
 		case 'v':{
@@ -139,13 +147,14 @@ int checkDict(char *teste,vector<string>* dic){
 	int ind_tex=strlen(teste),ind_atual=0,pos=0,len=0,result=0;
 	unsigned int ind_vec=0;
 	while(ind_atual<ind_tex){
-		if(teste[ind_atual]==' '||teste[ind_atual]=='\n'){
+		if((teste[ind_atual]==' '||teste[ind_atual]=='\n')&&ind_vec<dic->size()){
 			len=ind_atual-pos;
-			for(ind_vec=0;ind_vec<dic->size();ind_vec++){
-				if(dic->at(ind_vec).compare(texto.substr(pos,len))==0){
-					result++;
-				};
-			};
+			if(dic->at(ind_vec).compare(texto.substr(pos,len))==0){
+				result++;
+			}
+			else
+				result--;
+			ind_vec++;
 			pos=ind_atual+1;
 		};
 		ind_atual++;
@@ -155,13 +164,14 @@ int checkDict(char *teste,vector<string>* dic){
 }
 void inserirDic(char *dicty,vector<string>* dictionary){
 	string dic(dicty);
-	int ind_dic=0,ind_atual=0,pos=0,len=0;
+	int ind_dic=0,ind_atual=0,pos=0,len=0,palavras=0;
 	ind_dic=strlen(dicty);
 	while(ind_atual<ind_dic){
-		if(dicty[ind_atual]==' '||dicty[ind_atual]=='\n'){
+		if((dicty[ind_atual]==' '||dicty[ind_atual]=='\n')&&palavras<8000){
 			len=ind_atual-pos;
 			dictionary->push_back(dic.substr(pos,len));
 			pos=ind_atual+1;
+			palavras++;
 		}
 		ind_atual++;
 	}
