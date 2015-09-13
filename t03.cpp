@@ -7,7 +7,7 @@
 #define MAX 10
 #define OKAY 13
 #define CHARACTERES 256
-#define OKAYT 5000
+#define OKAYT 110000
 
 /**
  * Trabalho 3 ataque força bruta com dicionario
@@ -18,13 +18,14 @@ using namespace std;
 	void cesarCrypt(char *base,int key,int ind_arq,char *teste);
 	void transposicaoCrypt(char *base,int key,int ind_arq,char *teste);
 	void vigenereCrypt(char *base,char *key,int ind_arq,char *teste);
+	int checkDictCV(char *teste,vector<string>* dic);
 	int checkDict(char *teste,std::vector<std::string>* dic);
 	void inserirDic(char *dicty,vector<string>* dictionary);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL, *out=NULL;
 	char tipo=0;
-	int ind_arq=0,key=1,result=0,ind_dic=0;
+	int ind_arq=0,key=1,result=0,ind_dic=0,esperado=0;
 	if((arq=fopen(args[1],"r+b"))==NULL){
 		printf("nao foi possivel abrir ( - _ - )\n");
 		exit(0);
@@ -59,26 +60,33 @@ int main(int argc,char* args[]){
 	/*unsigned int ind_atual=0;
 	for(ind_atual=0;ind_atual<dictionary.size();ind_atual++)
 		cout << dictionary[ind_atual]<<endl;*/
+		esperado=ind_arq/10;
 	switch(tipo){
 		case 'c':{
 			for(key=1;key<CHARACTERES;key++){			
 				cesarCrypt(base,key,ind_arq,teste);
 				result=checkDict(teste,&dictionary);
-				//cout << result<<endl;
-				if(result > OKAY){
+				cout << result<<" , "<<key<<endl;
+				if(result<0)
+					result*=-1;
+				if(result > esperado){
 					printf("Cifra de Cesar\nChave:%d\n",key);
 					break;
-				}
+				};
+				
 			};
 			break;
 		};
 		case 't':{
 			key=1;
+			esperado=110000;
 			while(key<ind_arq){
 				transposicaoCrypt(base,key,ind_arq,teste);
-				result=checkDict(teste,&dictionary);
-				
-				if(result > OKAY){
+				result=(unsigned int)checkDict(teste,&dictionary);
+				cout << result<<" , "<<key<<endl;
+				if(result<0)
+					result*=-1;
+				if(result > esperado){
 					printf("Cifra de Transposicao\nChave:%d\n",key);
 					
 					break;
@@ -91,7 +99,7 @@ int main(int argc,char* args[]){
 		};
 		case 'v':{
 			//vigenereCrypt(base,,ind_arq,teste);
-			result=checkDict(teste,&dictionary);
+			result=checkDictCV(teste,&dictionary);
 			break;
 		};
 	};
@@ -154,7 +162,29 @@ int checkDict(char *teste,vector<string>* dic){
 			}
 			else
 				result--;
-			ind_vec++;
+			//cout << ind_vec++<<endl;
+			
+			pos=ind_atual+1;
+		};
+		ind_atual++;
+	};
+	//cout << result;
+	return result;
+}
+int checkDictCV(char *teste,vector<string>* dic){
+	string texto(teste);
+	int ind_tex=strlen(teste),ind_atual=0,pos=0,len=0,result=0;
+	unsigned int ind_vec=0;
+	while(ind_atual<ind_tex){
+		if((teste[ind_atual]==' '||teste[ind_atual]=='\n')&&ind_vec<dic->size()){
+			len=ind_atual-pos;
+			for(ind_vec=0;ind_vec<dic->size();ind_vec++){
+				if(dic->at(ind_vec).compare(texto.substr(pos,len))==0){
+					result++;
+				};
+			};
+			//cout << ind_vec++<<endl;
+			
 			pos=ind_atual+1;
 		};
 		ind_atual++;
