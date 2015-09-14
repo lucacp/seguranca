@@ -52,7 +52,7 @@ int main(int argc,char* args[]){
 	fseek(out,0,SEEK_END);
 	ind_dic=ftell(out);
 	rewind(out);
-	cout << ind_dic<<endl;
+	//cout << ind_dic<<endl;
 	char dicty[ind_dic];
 	fread(dicty,sizeof(char),ind_dic,out);
 	//cout << dicty<<endl;
@@ -66,7 +66,7 @@ int main(int argc,char* args[]){
 			for(key=1;key<CHARACTERES;key++){			
 				cesarCrypt(base,key,ind_arq,teste);
 				result=checkDict(teste,&dictionary);
-				cout << result<<" , "<<key<<endl;
+				//cout << result<<" , "<<key<<endl;
 				if(result<0)
 					result*=-1;
 				if(result > esperado){
@@ -83,7 +83,7 @@ int main(int argc,char* args[]){
 			while(key<ind_arq){
 				transposicaoCrypt(base,key,ind_arq,teste);
 				result=(unsigned int)checkDict(teste,&dictionary);
-				cout << result<<" , "<<key<<endl;
+			//	cout << result<<" , "<<key<<endl;
 				if(result<0)
 					result*=-1;
 				if(result > esperado){
@@ -94,7 +94,7 @@ int main(int argc,char* args[]){
 				key++;
 			};
 			//printf("Cifra de Transposição\nChave:%d\n",key);
-			printf("Resultado:%d\n",result);
+			//printf("Resultado:%d\n",result);
 			break;
 		};
 		case 'v':{
