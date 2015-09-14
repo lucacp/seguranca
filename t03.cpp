@@ -17,10 +17,11 @@
 using namespace std;
 	void cesarCrypt(char *base,int key,int ind_arq,char *teste);
 	void transposicaoCrypt(char *base,int key,int ind_arq,char *teste);
-	void vigenereCrypt(char *base,char *key,int ind_arq,char *teste);
-	int checkDictCV(char *teste,vector<string>* dic);
+	void vigenereCrypt(char *base,char *key,int tamanhokey,int ind_arq,char *teste);
+//	int checkDictCV(char *teste,vector<string>* dic);
 	int checkDict(char *teste,std::vector<std::string>* dic);
 	void inserirDic(char *dicty,vector<string>* dictionary);
+	void AtualizarChave(char key[10],int tamKey);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL, *out=NULL;
@@ -98,8 +99,19 @@ int main(int argc,char* args[]){
 			break;
 		};
 		case 'v':{
-			//vigenereCrypt(base,,ind_arq,teste);
-			result=checkDictCV(teste,&dictionary);
+			char key_str[10]={'0','\0','\0','\0','\0','\0','\0','\0','\0','\0'};
+			int key_tam=1;
+			while(key_tam<10){
+				vigenereCrypt(base,key_str,key_tam,ind_arq,teste);
+				result=checkDict(teste,&dictionary);
+				if(result<0)
+					result*=-1;
+				if(result > esperado){
+					printf("Cifra de Viginere\nChave:%s\n",key_str);
+					break;
+				};
+				AtualizarChave(key_str,key_tam);
+			};
 			break;
 		};
 	};
@@ -140,10 +152,10 @@ void transposicaoCrypt(char *base,int key,int ind_arq,char *teste){
 		};
 	};
 }
-void vigenereCrypt(char *base,char *key,int ind_arq,char *teste){
-	int campo=0,id_key=strlen(key),chav=0,ind_atual=0;
+void vigenereCrypt(char *base,char *key,int tamanhokey,int ind_arq,char *teste){
+	int campo=0,chav=0,ind_atual=0;
 	while(ind_arq>ind_atual){
-		campo=ind_atual%id_key;
+		campo=ind_atual%tamanhokey;
 		chav=key[campo];
 		chav=chav*-1;
 		teste[ind_atual]=(base[ind_atual]+chav+CHARACTERES)%CHARACTERES;
@@ -171,7 +183,7 @@ int checkDict(char *teste,vector<string>* dic){
 	//cout << result;
 	return result;
 }
-int checkDictCV(char *teste,vector<string>* dic){
+/*int checkDictCV(char *teste,vector<string>* dic){
 	string texto(teste);
 	int ind_tex=strlen(teste),ind_atual=0,pos=0,len=0,result=0;
 	unsigned int ind_vec=0;
@@ -191,7 +203,7 @@ int checkDictCV(char *teste,vector<string>* dic){
 	};
 	//cout << result;
 	return result;
-}
+}*/
 void inserirDic(char *dicty,vector<string>* dictionary){
 	string dic(dicty);
 	int ind_dic=0,ind_atual=0,pos=0,len=0,palavras=0;
@@ -207,3 +219,124 @@ void inserirDic(char *dicty,vector<string>* dictionary){
 	}
 
 }
+void AtualizarChave(char key[10],int *tamKey){
+	switch (*tamKey){
+		case 9:{
+			if(key[8]=='9')
+				key[8]='a';
+			else if(key[8]=='z')
+				key[8]='A';
+			else if(key[8]=='Z'){
+				key[8]='0';
+				key[9]='0';
+				(*tamKey)++;
+			}else
+				key[8]++;
+			break;
+		};
+		case 8:{
+			if(key[7]=='9')
+				key[7]='a';
+			else if(key[7]=='z')
+				key[7]='A';
+			else if(key[7]=='Z'){
+				key[7]='0';
+				key[8]='0';
+				(*tamKey)++;
+			}else
+				key[7]++;
+			break;
+		};
+		case 7:{
+			if(key[6]=='9')
+				key[6]='a';
+			else if(key[6]=='z')
+				key[6]='A';
+			else if(key[6]=='Z'){
+				key[6]='0';
+				key[7]='0';
+				(*tamKey)++;
+			}else
+				key[6]++;
+			break;
+		};
+		case 6:{
+			if(key[5]=='9')
+				key[5]='a';
+			else if(key[5]=='z')
+				key[5]='A';
+			else if(key[5]=='Z'){
+				key[5]='0';
+				key[6]='0';
+				(*tamKey)++;
+			}else
+				key[5]++;
+			break;
+		};
+		case 5:{
+			if(key[4]=='9')
+				key[4]='a';
+			else if(key[4]=='z')
+				key[4]='A';
+			else if(key[4]=='Z'){
+				key[4]='0';
+				key[5]='0';
+				(*tamKey)++;
+			}else
+				key[4]++;
+			break;
+		};
+		case 4:{
+			if(key[3]=='9')
+				key[3]='a';
+			else if(key[3]=='z')
+				key[3]='A';
+			else if(key[3]=='Z'){
+				key[3]='0';
+				key[4]='0';
+				(*tamKey)++;
+			}else
+				key[3]++;
+			break;
+		};
+		case 3:{
+			if(key[2]=='9')
+				key[2]='a';
+			else if(key[2]=='z')
+				key[2]='A';
+			else if(key[2]=='Z'){
+				key[2]='0';
+				key[3]='0';
+				(*tamKey)++;
+			}else
+				key[2]++;
+			break;
+		};
+		case 2:{
+			if(key[1]=='9')
+				key[1]='a';
+			else if(key[1]=='z')
+				key[1]='A';
+			else if(key[1]=='Z'){
+				key[1]='0';
+				key[2]='0';
+				(*tamKey)++;
+			}else
+				key[1]++;
+			break;
+		};
+		case 1:{
+			if(key[0]=='9')
+				key[0]='a';
+			else if(key[0]=='z')
+				key[0]='A';
+			else if(key[0]=='Z'){
+				key[0]='0';
+				key[1]='0';
+				(*tamKey)++;
+			}else
+				key[0]++;
+			break;
+		};
+	};
+};
