@@ -21,7 +21,7 @@ using namespace std;
 //	int checkDictCV(char *teste,vector<string>* dic);
 	int checkDict(char *teste,std::vector<std::string>* dic);
 	void inserirDic(char *dicty,vector<string>* dictionary);
-	void AtualizarChave(char key[10],int tamKey);
+	void AtualizarChave(char key[10],int *tamKey);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL, *out=NULL;
@@ -110,7 +110,7 @@ int main(int argc,char* args[]){
 					printf("Cifra de Viginere\nChave:%s\n",key_str);
 					break;
 				};
-				AtualizarChave(key_str,key_tam);
+				AtualizarChave(key_str,&key_tam);
 			};
 			break;
 		};
@@ -220,123 +220,122 @@ void inserirDic(char *dicty,vector<string>* dictionary){
 
 }
 void AtualizarChave(char key[10],int *tamKey){
-	switch (*tamKey){
-		case 9:{
-			if(key[8]=='9')
-				key[8]='a';
-			else if(key[8]=='z')
-				key[8]='A';
-			else if(key[8]=='Z'){
-				key[8]='0';
-				key[9]='0';
-				(*tamKey)++;
-			}else
-				key[8]++;
-			break;
-		};
-		case 8:{
-			if(key[7]=='9')
-				key[7]='a';
-			else if(key[7]=='z')
-				key[7]='A';
-			else if(key[7]=='Z'){
-				key[7]='0';
-				key[8]='0';
-				(*tamKey)++;
-			}else
-				key[7]++;
-			break;
-		};
-		case 7:{
-			if(key[6]=='9')
-				key[6]='a';
-			else if(key[6]=='z')
-				key[6]='A';
-			else if(key[6]=='Z'){
-				key[6]='0';
-				key[7]='0';
-				(*tamKey)++;
-			}else
-				key[6]++;
-			break;
-		};
-		case 6:{
-			if(key[5]=='9')
-				key[5]='a';
-			else if(key[5]=='z')
-				key[5]='A';
-			else if(key[5]=='Z'){
-				key[5]='0';
-				key[6]='0';
-				(*tamKey)++;
-			}else
-				key[5]++;
-			break;
-		};
-		case 5:{
-			if(key[4]=='9')
-				key[4]='a';
-			else if(key[4]=='z')
-				key[4]='A';
-			else if(key[4]=='Z'){
-				key[4]='0';
-				key[5]='0';
-				(*tamKey)++;
-			}else
-				key[4]++;
-			break;
-		};
-		case 4:{
-			if(key[3]=='9')
-				key[3]='a';
-			else if(key[3]=='z')
-				key[3]='A';
-			else if(key[3]=='Z'){
-				key[3]='0';
-				key[4]='0';
-				(*tamKey)++;
-			}else
-				key[3]++;
-			break;
-		};
-		case 3:{
-			if(key[2]=='9')
-				key[2]='a';
-			else if(key[2]=='z')
-				key[2]='A';
-			else if(key[2]=='Z'){
+	// começa no '0' até '9' vai para 'A' até 'Z' vai para 'a' até 'z' aumenta um digito '0','0'
+	if(key[0]=='9')
+		key[0]='A';
+	else if(key[0]=='Z')
+		key[0]='a';
+	else if(key[0]=='z'){
+		key[0]='0';
+		if(key[1]=='\0'){
+			key[1]='0';
+			(*tamKey)++;
+		}
+		else if(key[1]=='9')
+			key[1]='A';
+		else if(key[1]=='Z')
+			key[1]='a';
+		else if(key[1]=='z'){
+			key[1]='0';
+			if(key[2]=='\0'){
 				key[2]='0';
-				key[3]='0';
 				(*tamKey)++;
+			}
+			else if(key[2]=='9')
+				key[2]='A';
+			else if(key[2]=='Z')
+				key[2]='a';
+			else if(key[2]=='z'){
+				key[2]='0';
+				if(key[3]=='\0'){
+					key[3]='0';
+					(*tamKey)++;
+				}
+				else if(key[3]=='9')
+					key[3]='A';
+				else if(key[3]=='Z')
+					key[3]='a';
+				else if(key[3]=='z'){
+					key[3]='0';
+					if(key[4]=='\0'){
+						key[4]='0';
+						(*tamKey)++;
+					}
+					else if(key[4]=='9')
+						key[4]='A';
+					else if(key[4]=='Z')
+						key[4]='a';
+					else if(key[4]=='z'){
+						key[4]='0';
+						if(key[5]=='\0'){
+							key[5]='0';
+							(*tamKey)++;
+						}
+						else if(key[5]=='9')
+							key[5]='A';
+						else if(key[5]=='Z')
+							key[5]='a';
+						else if(key[5]=='z'){
+							key[5]='0';
+							if(key[6]=='\0'){
+								key[6]='0';
+								(*tamKey)++;
+							}
+							else if(key[6]=='9')
+								key[6]='A';
+							else if(key[6]=='Z')
+								key[6]='a';
+							else if(key[6]=='z'){
+								key[6]='0';
+								if(key[7]=='\0'){
+									key[7]='0';
+									(*tamKey)++;
+								}
+								else if(key[7]=='9')
+									key[7]='A';
+								else if(key[7]=='Z')
+									key[7]='a';
+								else if(key[7]=='z'){
+									key[7]='0';
+									if(key[8]=='\0'){
+										key[8]='0';
+										(*tamKey)++;
+									}
+									else if(key[8]=='9')
+										key[8]='A';
+									else if(key[8]=='Z')
+										key[8]='a';
+									else if(key[8]=='z'){
+										key[8]='0';
+										if(key[9]=='\0'){
+											key[9]='0';
+											(*tamKey)++;
+										}
+										else if(key[9]=='9')
+											key[9]='A';
+										else if(key[9]=='Z')
+											key[9]='a';
+										else if(key[9]=='z'){
+											(*tamKey)++;
+										}else
+											key[9]++;
+										
+									}else
+										key[8]++;
+								}else
+									key[7]++;
+							}else
+								key[6]++;
+						}else
+							key[5]++;
+					}else
+						key[4]++;
+				}else
+					key[3]++;
 			}else
 				key[2]++;
-			break;
-		};
-		case 2:{
-			if(key[1]=='9')
-				key[1]='a';
-			else if(key[1]=='z')
-				key[1]='A';
-			else if(key[1]=='Z'){
-				key[1]='0';
-				key[2]='0';
-				(*tamKey)++;
-			}else
-				key[1]++;
-			break;
-		};
-		case 1:{
-			if(key[0]=='9')
-				key[0]='a';
-			else if(key[0]=='z')
-				key[0]='A';
-			else if(key[0]=='Z'){
-				key[0]='0';
-				key[1]='0';
-				(*tamKey)++;
-			}else
-				key[0]++;
-			break;
-		};
-	};
+		}else
+			key[1]++;
+	}else
+		key[0]++;
 };
