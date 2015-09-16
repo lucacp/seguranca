@@ -118,7 +118,7 @@ int main(int argc,char* args[]){
 			break;
 		};
 		case 's':{
-			
+			//adicionar função de mapeamento de letras sozinhas duplas e triplas.
 		};
 	};
 	
