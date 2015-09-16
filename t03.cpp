@@ -99,11 +99,14 @@ int main(int argc,char* args[]){
 			break;
 		};
 		case 'v':{
-			char key_str[10]={'0','\0','\0','\0','\0','\0','\0','\0','\0','\0'};
-			int key_tam=1;
+			char key_str[10]={'A','b','c','d','\0','\0','\0','\0','\0','\0'};
+			int key_tam=4;
+			esperado=80000;
 			while(key_tam<10){
 				vigenereCrypt(base,key_str,key_tam,ind_arq,teste);
 				result=checkDict(teste,&dictionary);
+				if(key_tam>3)
+					cout << result<< " , "<<key_str<<endl;
 				if(result<0)
 					result*=-1;
 				if(result > esperado){
@@ -220,99 +223,79 @@ void inserirDic(char *dicty,vector<string>* dictionary){
 
 }
 void AtualizarChave(char key[10],int *tamKey){
-	// começa no '0' até '9' vai para 'A' até 'Z' vai para 'a' até 'z' aumenta um digito '0','0'
-	if(key[0]=='9')
-		key[0]='A';
-	else if(key[0]=='Z')
+	// começa no 'A' até 'Z' vai para 'a' até 'z' aumenta um digito 'A','A'
+	if(key[0]=='Z')
 		key[0]='a';
 	else if(key[0]=='z'){
-		key[0]='0';
+		key[0]='A';
 		if(key[1]=='\0'){
-			key[1]='0';
+			key[1]='A';
 			(*tamKey)++;
 		}
-		else if(key[1]=='9')
-			key[1]='A';
 		else if(key[1]=='Z')
 			key[1]='a';
 		else if(key[1]=='z'){
-			key[1]='0';
+			key[1]='A';
 			if(key[2]=='\0'){
-				key[2]='0';
+				key[2]='A';
 				(*tamKey)++;
 			}
-			else if(key[2]=='9')
-				key[2]='A';
 			else if(key[2]=='Z')
 				key[2]='a';
 			else if(key[2]=='z'){
-				key[2]='0';
+				key[2]='A';
 				if(key[3]=='\0'){
-					key[3]='0';
+					key[3]='A';
 					(*tamKey)++;
 				}
-				else if(key[3]=='9')
-					key[3]='A';
 				else if(key[3]=='Z')
 					key[3]='a';
 				else if(key[3]=='z'){
-					key[3]='0';
+					key[3]='A';
 					if(key[4]=='\0'){
-						key[4]='0';
+						key[4]='A';
 						(*tamKey)++;
 					}
-					else if(key[4]=='9')
-						key[4]='A';
 					else if(key[4]=='Z')
 						key[4]='a';
 					else if(key[4]=='z'){
-						key[4]='0';
+						key[4]='A';
 						if(key[5]=='\0'){
-							key[5]='0';
+							key[5]='A';
 							(*tamKey)++;
 						}
-						else if(key[5]=='9')
-							key[5]='A';
 						else if(key[5]=='Z')
 							key[5]='a';
 						else if(key[5]=='z'){
-							key[5]='0';
+							key[5]='A';
 							if(key[6]=='\0'){
-								key[6]='0';
+								key[6]='A';
 								(*tamKey)++;
 							}
-							else if(key[6]=='9')
-								key[6]='A';
 							else if(key[6]=='Z')
 								key[6]='a';
 							else if(key[6]=='z'){
-								key[6]='0';
+								key[6]='A';
 								if(key[7]=='\0'){
-									key[7]='0';
+									key[7]='A';
 									(*tamKey)++;
 								}
-								else if(key[7]=='9')
-									key[7]='A';
 								else if(key[7]=='Z')
 									key[7]='a';
 								else if(key[7]=='z'){
-									key[7]='0';
+									key[7]='A';
 									if(key[8]=='\0'){
-										key[8]='0';
+										key[8]='A';
 										(*tamKey)++;
 									}
-									else if(key[8]=='9')
-										key[8]='A';
 									else if(key[8]=='Z')
 										key[8]='a';
 									else if(key[8]=='z'){
-										key[8]='0';
+										key[8]='A';
 										if(key[9]=='\0'){
-											key[9]='0';
+											key[9]='A';
 											(*tamKey)++;
 										}
-										else if(key[9]=='9')
-											key[9]='A';
 										else if(key[9]=='Z')
 											key[9]='a';
 										else if(key[9]=='z'){
