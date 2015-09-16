@@ -105,8 +105,8 @@ int main(int argc,char* args[]){
 			while(key_tam<10){
 				vigenereCrypt(base,key_str,key_tam,ind_arq,teste);
 				result=checkDict(teste,&dictionary);
-				if(key_tam>3)
-					cout << result<< " , "<<key_str<<endl;
+				//if(key_tam>3)
+					//cout << result<< " , "<<key_str<<endl;
 				if(result<0)
 					result*=-1;
 				if(result > esperado){
@@ -116,6 +116,9 @@ int main(int argc,char* args[]){
 				AtualizarChave(key_str,&key_tam);
 			};
 			break;
+		};
+		case 's':{
+			
 		};
 	};
 	
