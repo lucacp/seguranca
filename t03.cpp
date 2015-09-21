@@ -22,6 +22,7 @@ using namespace std;
 	int checkDict(char *teste,std::vector<std::string>* dic);
 	void inserirDic(char *dicty,vector<string>* dictionary);
 	void AtualizarChave(char key[10],int *tamKey);
+	void compararCharacteres(char *base,int *vetor);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL, *out=NULL;
@@ -119,6 +120,18 @@ int main(int argc,char* args[]){
 		};
 		case 's':{
 			//adicionar função de mapeamento de letras sozinhas duplas e triplas.
+			int characteresSoloDict[256],characteresSoloBase[256];
+			memset(characteresSoloDict,0,sizeof(int)*CHARACTERES);
+			memset(characteresSoloBase,0,sizeof(int)*CHARACTERES);
+			compararCharacteres(dicty,characteresSoloDict);
+			compararCharacteres(base,characteresSoloBase);
+			int indice=0;
+			for(indice=0;indice<256;indice++){
+				cout << indice << ": " << characteresSoloDict[indice] << ", " <<characteresSoloBase[indice] <<"\t    \t";
+				if(indice%5==0)
+					cout << endl;
+			};
+			cout << endl;
 		};
 	};
 	
@@ -324,4 +337,11 @@ void AtualizarChave(char key[10],int *tamKey){
 			key[1]++;
 	}else
 		key[0]++;
+};
+void compararCharacteres(char *base,int *vetor){
+	int indice=0,tam_string=strlen(base),local=0;
+	for(indice=0;indice<tam_string;indice++){
+		local=(base[indice]+CHARACTERES)%CHARACTERES;
+		vetor[local]++;
+	};
 };
