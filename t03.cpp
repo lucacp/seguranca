@@ -125,12 +125,14 @@ int main(int argc,char* args[]){
 			memset(characteresSoloBase,0,sizeof(int)*CHARACTERES);
 			compararCharacteres(dicty,characteresSoloDict);
 			compararCharacteres(base,characteresSoloBase);
-			int indice=0;
+			
+			/*int indice=0;
+			
 			for(indice=0;indice<256;indice++){
-				cout << indice << ": " << characteresSoloDict[indice] << ", " <<characteresSoloBase[indice] <<"\t    \t";
+				cout << (char)indice << ": " << characteresSoloDict[indice] << ", " <<characteresSoloBase[indice] <<"\t    \t";
 				if(indice%5==0)
 					cout << endl;
-			};
+			};// */
 			cout << endl;
 		};
 	};
