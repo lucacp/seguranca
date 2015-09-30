@@ -23,6 +23,8 @@ using namespace std;
 	void inserirDic(char *dicty,vector<string>* dictionary);
 	void AtualizarChave(char key[10],int *tamKey);
 	void compararCharacteres(char *base,int *vetor);
+	void Duplas(vector<string> *str);
+	void Triplas(vector<string> *str);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL, *out=NULL;
@@ -121,10 +123,20 @@ int main(int argc,char* args[]){
 		case 's':{
 			//adicionar função de mapeamento de letras sozinhas duplas e triplas.
 			int characteresSoloDict[256],characteresSoloBase[256];
+			vector<string> strD,strT; 
+			vector<int> compD,compT;
+			
 			memset(characteresSoloDict,0,sizeof(int)*CHARACTERES);
 			memset(characteresSoloBase,0,sizeof(int)*CHARACTERES);
+			
 			compararCharacteres(dicty,characteresSoloDict);
 			compararCharacteres(base,characteresSoloBase);
+			
+			Duplas(&strD);
+			Triplas(&strT);
+			
+			//ComparaDuplasDic(&strD,dicty,&compD);
+			//ComparaTriplasDic(&strT,dicty,&compT);
 			
 			/*int indice=0;
 			
@@ -345,5 +357,42 @@ void compararCharacteres(char *base,int *vetor){
 	for(indice=0;indice<tam_string;indice++){
 		local=(base[indice]+CHARACTERES)%CHARACTERES;
 		vetor[local]++;
+	};
+};
+void Duplas(vector<string> *str){
+	int i=0,j=0;
+	char vec[2]={0,0};
+	for(i=0,j=0;i<256;j++){
+		if(j==0)
+			vec[0]=i;
+		vec[1]=j;
+		string st(vec);
+		str->push_back(st);
+		if(j+1==256){
+			i++;
+			j=-1;
+		};
+	};
+};
+void Triplas(vector<string> *str){
+	int i=0,j=0,k=0;
+	char vec[3]={0,0,0};
+	for(i=0,j=0,k=0;k<256;j++){
+		if(j==0){
+			vec[1]=i;
+			if(i==0)
+				vec[0]=k;
+		}
+		vec[2]=j;
+		string st(vec);
+		str->push_back(st);
+		if(j+1==256){
+			i++;
+			j=-1;
+			if(i+1==256){
+				k++;
+				i=0;
+			};
+		};
 	};
 };
