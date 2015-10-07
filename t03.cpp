@@ -25,6 +25,8 @@ using namespace std;
 	void compararCharacteres(char *base,int *vetor);
 	void Duplas(vector<string> *str);
 	void Triplas(vector<string> *str);
+	void comparaDuplas(vector<string> *str, char *texto,vector<unsigned int> *dup);
+	void comparaTriplas(vector<string> *str, char *texto,vector<unsigned int> *trp);
 	
 int main(int argc,char* args[]){
 	FILE *arq=NULL, *out=NULL;
@@ -124,7 +126,7 @@ int main(int argc,char* args[]){
 			//adicionar função de mapeamento de letras sozinhas duplas e triplas.
 			int characteresSoloDict[256],characteresSoloBase[256];
 			vector<string> strD,strT; 
-			vector<int> compD,compT;
+			vector<unsigned int> compD,compT;
 			
 			memset(characteresSoloDict,0,sizeof(int)*CHARACTERES);
 			memset(characteresSoloBase,0,sizeof(int)*CHARACTERES);
@@ -135,8 +137,8 @@ int main(int argc,char* args[]){
 			Duplas(&strD);
 			Triplas(&strT);
 			
-			//ComparaDuplasDic(&strD,dicty,&compD);
-			//ComparaTriplasDic(&strT,dicty,&compT);
+			comparaDuplas(&strD,dicty,&compD);
+			comparaTriplas(&strT,dicty,&compT);
 			
 			/*int indice=0;
 			
@@ -145,6 +147,7 @@ int main(int argc,char* args[]){
 				if(indice%5==0)
 					cout << endl;
 			};// */
+			cout << compD.at(0);
 			cout << endl;
 		};
 	};
@@ -393,6 +396,30 @@ void Triplas(vector<string> *str){
 				k++;
 				i=0;
 			};
+		};
+	};
+};
+void comparaDuplas(vector<string> *str, char *texto,vector<unsigned int> *dup){
+	string dic(texto);
+	unsigned int i=0,j=0;
+	for(i=0 ; i < dic.size() -1; i++){
+		string dp(dic.substr(i,2));
+		for(j=0;j<str->size() ; j++){
+			if(str->at(j).compare(dp)==0)
+				dup->at(j)++;
+			
+		};
+	};
+};
+void comparaTriplas(vector<string> *str, char *texto,vector<unsigned int> *trp){
+	string dic(texto);
+	unsigned int i=0,j=0;
+	for(i=0 ; i < dic.size() -2; i++){
+		string dp(dic.substr(i,3));
+		for(j=0;j<str->size() ; j++){
+			if(str->at(j).compare(dp)==0)
+				trp->at(j)++;
+			
 		};
 	};
 };
