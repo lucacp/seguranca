@@ -11,6 +11,9 @@
 
 /**
  * Trabalho 3 ataque força bruta com dicionario
+ * Compilar g++ -Wall -o "t03" "t03.cpp"
+ * Rodar(linux) ./t03 <nomearquivoCriptografado> <nomearquivoDicionario> <tipo:c,v,t,s>
+ * 																			s é para o trabalho 4 (ainda não está completo)
  * objetivo: decifrar com cesar transposição e vigenere(curta) verificando chave com dicionario + heuristicas
  * 
  */
