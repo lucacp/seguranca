@@ -6,36 +6,48 @@
 using namespace std;
 
 void Operacao(int op,char *iner,char *iner2,char *outer){
-	int niner=0,niner2=0,nouter=0,nmaior=0;
+	int niner=0,niner2=0,nouter1=0,nouter2=0,nmaior=0,nmenor=0;
+	bool inerflag=false;
+	niner=strlen(iner);
+	nmaior=niner;
+	nmenor=niner;
+	niner2=strlen(iner2);		
 	switch(op){
-		case 1:{
-			for(niner=0;niner<MAX;niner++){
-				if(iner[niner]==0){
-					break;
-				}
-			}
-			nmaior=niner;
-			for(niner2=0;niner2<MAX;niner2++){
-				if(iner2[niner2]==0){
-					break;
-				}
-			}
-			if(nmaior<niner2) nmaior=niner2;
+		case 1:{//SOMA
+			if(nmaior<niner2){ 	nmaior=niner2; inerflag=true;}
+			else 				nmenor=niner2;
 			
-			for(nouter=0;nouter<nmaior+1;nouter++){
-				outer[nouter]=((iner[nouter]-'0')+(iner2[nouter]-'0'))+'0';
-			};
-			for(nouter=0;nouter<nmaior+2;nouter++){
-				if(outer[nouter]>'9'){
-					if(outer[nouter+1]>'0')
-						outer[nouter+1]++;
+			for(nouter1=nmenor,nouter2=nmaior;nouter2>=0;nouter1--,nouter2--){
+				if(inerflag){
+					if(nouter1>=0)
+						outer[nouter2+1]=((iner[nouter1]-'0')+(iner2[nouter2]-'0'))+'0';
 					else
-						outer[nouter+1]='1';
-					outer[nouter]-=10;
-				}else if(outer[nouter]<'0'){
-					outer[nouter]+='0';
+						outer[nouter2+1]=iner2[nouter2];
+				}else{
+					if(nouter1>=0)
+						outer[nouter2+1]=((iner[nouter2]-'0')+(iner2[nouter1]-'0'))+'0';
+					else
+						outer[nouter2+1]=iner[nouter2];
+					};
+			};
+			
+			for(nouter1=nmaior;nouter1>=0;nouter1--){
+				if(outer[nouter1]>'9'){
+					if(outer[nouter1-1]>'0')
+						outer[nouter1-1]++;
+					else
+						outer[nouter1-1]='1';
+					outer[nouter1]-=10;
+				}else if(outer[nouter1]<'0'){
+					outer[nouter1]+='0';
 				}
 			};
+			break;
+		}
+		case 2:{ //MULTIPLICACAO
+			
+			
+			
 			break;
 		}
 	}
