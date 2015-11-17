@@ -50,6 +50,24 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			
 			break;
 		}
+		case 3:{ //Divisão P/ modulo N (necessitando subtração)
+			
+			
+			
+			break;
+		}		
+		case 4:{ //Exponenciação soma e mult
+			
+			
+			
+			break;
+		}		
+		case 5:{ //inverso multiplicativo (subtração + divisão + soma + multi)
+			
+			
+			
+			break;
+		}		
 	}
 }
 
