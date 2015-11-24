@@ -68,11 +68,42 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			/**a multiplicação será redução dos characteres em '0' para multiplica-los em ordem reversa,
 			 * ou seja, será multiplicado os ultimos numeros( unidades ) colocando os por primeiro na saida
 			 * após será invertido sua ordem.
+			 * alterado para ja ter invertido a ordem logo de começo!
 			 * */
-			for(nouter1=strlen(iner);nouter1>0;nouter1--){
-				
+			char aux[MAX];
+			memset(aux,0,sizeof(aux));
+			nouter2=strlen(iner);int casa=0,casas=strlen(iner2);
+			for(nouter1=0;nouter1<nouter2;nouter1++){
+				outer[nouter1]=((iner[nouter1]-'0')*(iner2[casa]-'0'));
 			}
-			
+			for(nouter1=0;nouter1<nouter2+1;nouter1++){
+				if(outer[nouter1]>10){
+					outer[nouter1+1]+=outer[nouter1]/10;
+					outer[nouter1]=(outer[nouter1]%10)+'0';
+				}
+				else if(nouter1!=nouter2)
+					outer[nouter1]+='0';
+			}
+			for(casa=1;casa<casas;casa++){
+				for(nouter1=0;nouter1<nouter2+casa;nouter1++){
+					if(nouter1<casa)
+						aux[nouter1]='0';
+					else
+						aux[nouter1]=((iner[nouter1-casa]-'0')*(iner2[casa]-'0'));
+				}
+				nouter2=strlen(iner);
+				for(nouter1=casa;nouter1<nouter2+casa;nouter1++){
+					if(aux[nouter1]>10){
+						if(nouter1+1<nouter2+casa)
+							aux[nouter1+1]+=aux[nouter1]/10;
+						aux[nouter1]=(aux[nouter1]%10)+'0';
+					}else if(aux[nouter1]<10)
+						aux[nouter1]+='0';
+				}
+				Operacao(1,outer,aux,outer);
+				printf("%s\n",aux);
+				memset(aux,0,sizeof(nouter2+1));
+			};
 			break;
 		}
 		case 3:{ //Divisão P/ modulo N (necessitando subtração)
