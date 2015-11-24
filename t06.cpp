@@ -4,7 +4,22 @@
 #include <string.h>
 #define MAX 1123456
 using namespace std;
-
+void inverter(char *campo,int tam){
+	int n=tam,i=0;
+	char aux[tam];
+	memset(aux,0,sizeof(aux));
+	for(;n>0;n--,i++){
+		aux[i]=campo[n-1];
+	}
+	if(aux[0]==0)
+		for(i=1,n=strlen(campo);i<n;i++){
+			campo[i]=aux[i];
+		}
+		else
+			for(i=0,n=tam;i<n;i++){
+				campo[i]=aux[i];
+			}
+}
 void Operacao(int op,char *iner,char *iner2,char *outer){
 	int niner=0,niner2=0,nouter1=0,nouter2=0,nmaior=0,nmenor=0;
 	bool inerflag=false;
@@ -14,39 +29,49 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 	niner2=strlen(iner2);		
 	switch(op){
 		case 1:{//SOMA
-			if(nmaior<niner2){ 	nmaior=niner2; inerflag=true;}
-			else 				nmenor=niner2;
+			if(nmaior<niner2){ 	
+				nmaior=niner2; 
+				inerflag=true;
+			}
+			else 
+				nmenor=niner2;
 			
-			for(nouter1=nmenor,nouter2=nmaior;nouter2>=0;nouter1--,nouter2--){
+			for(nouter2=0,nouter1=0;nouter2<nmaior;nouter2++,nouter1++){
 				if(inerflag){
-					if(nouter1>=0)
-						outer[nouter2+1]=((iner[nouter1]-'0')+(iner2[nouter2]-'0'))+'0';
+					if(nouter1<nmenor)
+						outer[nouter2]=((iner[nouter1]-'0')+(iner2[nouter2]-'0'))+'0';
 					else
-						outer[nouter2+1]=iner2[nouter2];
+						outer[nouter2]=iner2[nouter2];
 				}else{
-					if(nouter1>=0)
-						outer[nouter2+1]=((iner[nouter2]-'0')+(iner2[nouter1]-'0'))+'0';
+					if(nouter1<nmenor)
+						outer[nouter2]=((iner[nouter2]-'0')+(iner2[nouter1]-'0'))+'0';
 					else
-						outer[nouter2+1]=iner[nouter2];
+						outer[nouter2]=iner[nouter2];
 					};
 			};
-			
-			for(nouter1=nmaior;nouter1>=0;nouter1--){
+			nouter2=strlen(outer);
+			for(nouter1=0;nouter1<nouter2;nouter1++){
 				if(outer[nouter1]>'9'){
-					if(outer[nouter1-1]>'0')
-						outer[nouter1-1]++;
+					//printf(" %d,'%c' ",outer[nouter1],outer[nouter1]);
+					if(outer[nouter1+1]>'0')
+						outer[nouter1+1]++;
 					else
-						outer[nouter1-1]='1';
+						outer[nouter1+1]='1';
 					outer[nouter1]-=10;
-				}else if(outer[nouter1]<'0'){
+				}/*else if(outer[nouter1]<'0'){
 					outer[nouter1]+='0';
-				}
+				}*/
 			};
 			break;
 		}
 		case 2:{ //MULTIPLICACAO
-			
-			
+			/**a multiplicação será redução dos characteres em '0' para multiplica-los em ordem reversa,
+			 * ou seja, será multiplicado os ultimos numeros( unidades ) colocando os por primeiro na saida
+			 * após será invertido sua ordem.
+			 * */
+			for(nouter1=strlen(iner);nouter1>0;nouter1--){
+				
+			}
 			
 			break;
 		}
@@ -84,7 +109,15 @@ int main(int argc,char* args[]){
 	getchar();
 	//printf("\n1-soma\ndigite sua operacao: ");
 	scanf("%d",&op);
+	//printf("%s\n",iner);
+	inverter(iner,strlen(iner));
+	//printf("%s\n",iner);
+	//printf("%s\n",iner2);
+	inverter(iner2,strlen(iner2));
+	//printf("%s\n",iner2);
 	Operacao(op,iner,iner2,outer);
+	//printf("%s\n",outer);
+	inverter(outer,strlen(outer));
 	printf("%s\n",outer);
 
 
