@@ -92,16 +92,16 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 						aux[nouter1]=((iner[nouter1-casa]-'0')*(iner2[casa]-'0'));
 				}
 				nouter2=strlen(iner);
-				for(nouter1=casa;nouter1<nouter2+casa;nouter1++){
+				for(nouter1=casa;nouter1<nouter2+casa+1;nouter1++){
 					if(aux[nouter1]>10){
-						if(nouter1+1<nouter2+casa)
+						if(nouter1+1<nouter2+casa+1)
 							aux[nouter1+1]+=aux[nouter1]/10;
 						aux[nouter1]=(aux[nouter1]%10)+'0';
 					}else if(aux[nouter1]<10)
 						aux[nouter1]+='0';
 				}
 				Operacao(1,outer,aux,outer);
-				printf("%s\n",aux);
+				//printf("%s\n",aux);
 				memset(aux,0,sizeof(nouter2+1));
 			};
 			break;
@@ -119,6 +119,12 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			break;
 		}		
 		case 5:{ //inverso multiplicativo (subtração + divisão + soma + multi)
+			
+			
+			
+			break;
+		}
+		case 6:{ //subtração 
 			
 			
 			
