@@ -107,7 +107,11 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			break;
 		}
 		case 3:{ //Divisão P/ modulo N (necessitando subtração)
-			
+			/** a divisão será realizada pela multiplicação do iner2 para poder subtrair do iner pelos numeros de maior valia
+			 * caso a mult==0 aumenta o numero de casas iniciais, caso contrario é só fazer a mult para ver qual numero 
+			 * que da resultado nao negativo para prosseguir as contas até terminar as possibilidades
+			 * 
+			 * */
 			
 			
 			break;
