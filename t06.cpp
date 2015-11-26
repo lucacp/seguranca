@@ -157,7 +157,7 @@ int main(int argc,char* args[]){
 	inverter(iner2,strlen(iner2));
 	//printf("%s\n",iner2);
 	Operacao(op,iner,iner2,outer);
-	//printf("%s\n",outer);
+	printf("%s\n",outer);
 	inverter(outer,strlen(outer));
 	printf("%s\n",outer);
 
