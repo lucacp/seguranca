@@ -78,10 +78,13 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			}
 			for(nouter1=0;nouter1<nouter2+1;nouter1++){
 				if(outer[nouter1]>10){
-					outer[nouter1+1]+=outer[nouter1]/10;
+					if(nouter1+1==nouter2+1)
+						outer[nouter1+1]+=outer[nouter1]/10+'0';
+					else
+						outer[nouter1+1]+=outer[nouter1]/10;
 					outer[nouter1]=(outer[nouter1]%10)+'0';
 				}
-				else if(nouter1!=nouter2)
+				else
 					outer[nouter1]+='0';
 			}
 			for(casa=1;casa<casas;casa++){
@@ -93,11 +96,11 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				}
 				nouter2=strlen(iner);
 				for(nouter1=casa;nouter1<nouter2+casa+1;nouter1++){
-					if(aux[nouter1]>10){
+					if(aux[nouter1]>=10){
 						if(nouter1+1<nouter2+casa+1)
 							aux[nouter1+1]+=aux[nouter1]/10;
 						aux[nouter1]=(aux[nouter1]%10)+'0';
-					}else if(aux[nouter1]<10)
+					}else
 						aux[nouter1]+='0';
 				}
 				Operacao(1,outer,aux,outer);
