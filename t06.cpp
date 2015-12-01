@@ -132,8 +132,32 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			break;
 		}
 		case 6:{ //subtração 
-			
-			
+			/**a subtração pode ser somente para numeros positivos(resultado)
+			 * então se o niner2 for maior então retorna no outer o numero todo zerado
+			 * */
+			if(nmaior<niner2){ 	
+				nmaior=niner2; 
+				inerflag=true;
+			}
+			else 
+				nmenor=niner2;
+			if(niner==niner2){
+				if(iner[niner-1]<iner2[niner-1])
+					inerflag=true;
+			};
+			int i=0;
+			if(inerflag){
+				for(i=0;i<nmaior;i++){
+					outer[i]='0';
+				}
+				break;
+			};
+			for(nouter1=0,nouter2=0;nouter2<nmaior;nouter1++,nouter2++){
+				if(nouter1<nmenor)
+					outer[nouter2]=((iner[nouter2]-'0')-(iner2[nouter1]-'0'))+'0';
+				else
+					outer[nouter2]=iner[nouter2];
+			};
 			
 			break;
 		}		
@@ -160,7 +184,7 @@ int main(int argc,char* args[]){
 	inverter(iner2,strlen(iner2));
 	//printf("%s\n",iner2);
 	Operacao(op,iner,iner2,outer);
-	printf("%s\n",outer);
+	//printf("%s\n",outer);
 	inverter(outer,strlen(outer));
 	printf("%s\n",outer);
 
