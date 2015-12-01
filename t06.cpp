@@ -145,6 +145,25 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				if(iner[niner-1]<iner2[niner-1])
 					inerflag=true;
 			};
+			bool passe=false;
+			for(nouter1=0,nouter2=0;nouter2<nmaior&&!inerflag;nouter1++,nouter2++){
+				if(nouter1<nmenor){
+					if((iner[nouter2])<(iner2[nouter1])){ 
+						passe=true;
+					}
+					else if((iner[nouter2])>=(iner2[nouter1])){ 
+						passe=false;
+					}
+				}
+				else{
+					outer[nouter2]=iner[nouter2];
+					passe=false;
+				}
+				if(passe&&nouter2+1==nmaior){
+					if((iner[nouter2])<=(iner2[nouter1])) inerflag=true;
+				}
+			};
+			
 			int i=0;
 			if(inerflag){
 				for(i=0;i<nmaior;i++){
