@@ -151,9 +151,10 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 					if((iner[nouter2])<(iner2[nouter1])){ 
 						passe=true;
 					}
-					else if((iner[nouter2])>=(iner2[nouter1])){ 
+					else if((iner[nouter2])>(iner2[nouter1])){ 
 						passe=false;
 					}
+					else if(passe) passe=true;
 				}
 				else{
 					outer[nouter2]=iner[nouter2];
