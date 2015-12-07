@@ -174,11 +174,30 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			};
 			for(nouter1=0,nouter2=0;nouter2<nmaior;nouter1++,nouter2++){
 				if(nouter1<nmenor)
-					outer[nouter2]=((iner[nouter2]-'0')-(iner2[nouter1]-'0'))+'0';
+					outer[nouter2]=iner[nouter2]-iner2[nouter1];
 				else
 					outer[nouter2]=iner[nouter2];
 			};
-			
+			passe=false;
+			for(nouter2=0;nouter2<nmaior;nouter2++){
+				//if(nouter1<nmenor)
+					//outer[nouter2]+='0';
+				//else
+				if(outer[nouter2]<0&&!passe){
+					outer[nouter2]+=10+'0';
+					outer[nouter2+1]-=1;
+					passe=true;
+				}
+				else if(outer[nouter2]<0&&passe){
+					outer[nouter2]+=10+'0';
+					outer[nouter2+1]-=1;
+					passe=true;
+				}
+				else if(outer[nouter2]>=0&&outer[nouter2]<=9){
+					outer[nouter2]+='0';
+					passe=false;
+				}
+			};
 			break;
 		}		
 	}
