@@ -4,6 +4,16 @@
 #include <string.h>
 #define MAX 1123456
 using namespace std;
+void zeroEsquerda(char *campo,int tam){
+	int n=tam,i=0;
+	for(n=tam;n>=i;n--){
+		if(campo[n]<='0'){
+			campo[n]=0;
+		}
+		else
+			return;
+	}
+}
 void inverter(char *campo,int tam){
 	int n=tam,i=0;
 	char aux[tam];
@@ -20,6 +30,7 @@ void inverter(char *campo,int tam){
 				campo[i]=aux[i];
 			}
 }
+bool negative=false;
 void Operacao(int op,char *iner,char *iner2,char *outer){
 	int niner=0,niner2=0,nouter1=0,nouter2=0,nmaior=0,nmenor=0;
 	bool inerflag=false;
@@ -62,6 +73,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 					outer[nouter1]+='0';
 				}*/
 			};
+			zeroEsquerda(outer,sizeof(outer));
 			break;
 		}
 		case 2:{ //MULTIPLICACAO
@@ -86,7 +98,8 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				}
 				else
 					outer[nouter1]+='0';
-			}
+			};
+			zeroEsquerda(outer,sizeof(outer));
 			for(casa=1;casa<casas;casa++){
 				for(nouter1=0;nouter1<nouter2+casa;nouter1++){
 					if(nouter1<casa)
@@ -105,6 +118,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				}
 				Operacao(1,outer,aux,outer);
 				//printf("%s\n",aux);
+				zeroEsquerda(outer,sizeof(outer));
 				memset(aux,0,sizeof(nouter2+1));
 			};
 			break;
@@ -113,7 +127,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			/** a divisão será realizada pela multiplicação do iner2 para poder subtrair do iner pelos numeros de maior valia
 			 * caso a mult==0 aumenta o numero de casas iniciais, caso contrario é só fazer a mult para ver qual numero 
 			 * que da resultado nao negativo para prosseguir as contas até terminar as possibilidades
-			 * 
+			 * é necessário apresentar o quociente e o resto!
 			 * */
 			
 			
@@ -170,8 +184,10 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				for(i=0;i<nmaior;i++){
 					outer[i]='0';
 				}
+				negative=true;
 				break;
 			};
+			negative=false;
 			for(nouter1=0,nouter2=0;nouter2<nmaior;nouter1++,nouter2++){
 				if(nouter1<nmenor)
 					outer[nouter2]=iner[nouter2]-iner2[nouter1];
