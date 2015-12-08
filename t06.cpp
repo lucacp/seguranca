@@ -4,8 +4,12 @@
 #include <string.h>
 #define MAX 1123456
 using namespace std;
+
+bool negative=false;
+
 void zeroEsquerda(char *campo,int tam){
 	int n=tam,i=0;
+	if(!negative) i++;
 	for(n=tam;n>=i;n--){
 		if(campo[n]<='0'){
 			campo[n]=0;
@@ -13,6 +17,13 @@ void zeroEsquerda(char *campo,int tam){
 		else
 			return;
 	}
+}
+void deslocarDireita(char *campo,int tam,int casas){
+	int n=tam,i=0;
+	for(i=0;i<n-casas;i++){
+		campo[i]=campo[i+casas];
+	};
+	return;
 }
 void inverter(char *campo,int tam){
 	int n=tam,i=0;
@@ -30,7 +41,7 @@ void inverter(char *campo,int tam){
 				campo[i]=aux[i];
 			}
 }
-bool negative=false;
+
 void Operacao(int op,char *iner,char *iner2,char *outer){
 	int niner=0,niner2=0,nouter1=0,nouter2=0,nmaior=0,nmenor=0;
 	bool inerflag=false;
@@ -128,14 +139,44 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			 * caso a mult==0 aumenta o numero de casas iniciais, caso contrario é só fazer a mult para ver qual numero 
 			 * que da resultado nao negativo para prosseguir as contas até terminar as possibilidades
 			 * é necessário apresentar o quociente e o resto!
+			 * nesta "case 3:" será unicamente o resto!
+			 * o quociente sera na "case 7:"
 			 * */
-			
-			
+			char aux[strlen(iner)],aux2[strlen(iner)];
+			memset(aux2,'0',sizeof(aux2));
+			memset(aux,0,sizeof(aux));
+			int casas=niner2,desloca=niner-niner2,i=0;
+			for(i=0;i<desloca;i++){
+				aux[i]='0';
+			};
+			for(i=0;i<casas;i++){
+				aux[i+desloca]=iner2[i];
+			};
+			do{	
+				Operacao(6,iner,aux,aux2);
+				if(negative&&desloca>0){
+					deslocarDireita(aux,strlen(aux),1);
+					negative=false;
+					while(!negative){
+						Operacao(6,iner,aux,aux2);
+						memcpy(outer,aux2,strlen(aux2));
+					}
+				}else if(desloca==0){
+					
+				}
+			}while(desloca--);
 			break;
 		}		
 		case 4:{ //Exponenciação soma e mult
-			
-			
+			if(niner2==1&&iner2[0]=='0'){
+				outer[0]='1';
+				return;
+			}else
+			if(niner2==1&&iner2[0]=='1'){
+				iner2[0]='0';
+				Operacao(1,iner,iner2,outer);
+				return;
+			}
 			
 			break;
 		}		
@@ -185,6 +226,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 					outer[i]='0';
 				}
 				negative=true;
+				zeroEsquerda(outer,sizeof(outer));
 				break;
 			};
 			negative=false;
@@ -214,6 +256,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 					passe=false;
 				}
 			};
+			zeroEsquerda(outer,sizeof(outer));
 			break;
 		}		
 	}
