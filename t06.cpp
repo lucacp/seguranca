@@ -20,7 +20,7 @@ void zeroEsquerda(char *campo,int tam){
 }
 void deslocarDireita(char *campo,int tam,int casas){
 	int n=tam,i=0;
-	for(i=0;i<n-casas;i++){
+	for(i=0;i<n-casas+1;i++){
 		campo[i]=campo[i+casas];
 	};
 	return;
@@ -44,6 +44,7 @@ void inverter(char *campo,int tam){
 
 void Operacao(int op,char *iner,char *iner2,char *outer){
 	int niner=0,niner2=0,nouter1=0,nouter2=0,nmaior=0,nmenor=0;
+	char Dobro[2]="2",Zero[2]="0";
 	bool inerflag=false;
 	niner=strlen(iner);
 	nmaior=niner;
@@ -142,29 +143,114 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			 * nesta "case 3:" será unicamente o resto!
 			 * o quociente sera na "case 7:"
 			 * */
-			char aux[strlen(iner)],aux2[strlen(iner)];
-			memset(aux2,'0',sizeof(aux2));
-			memset(aux,0,sizeof(aux));
+			char aux[strlen(iner)],aux2[3][strlen(iner)*2],aux3[strlen(iner)];
+			memset(aux3,0,sizeof(aux3));
+			memset(aux2,0,sizeof(aux2));
+			memcpy(aux,iner,sizeof(aux));
 			int casas=niner2,desloca=niner-niner2,i=0;
 			for(i=0;i<desloca;i++){
-				aux[i]='0';
+				aux2[0][i]='0';
 			};
 			for(i=0;i<casas;i++){
-				aux[i+desloca]=iner2[i];
+				aux2[0][i+desloca]=iner2[i];
 			};
+			//printf("n1=%d\nn2=%d\n",niner,niner2);
+			Operacao(2,aux2[0],Dobro,aux2[1]);
+			Operacao(2,aux2[1],Dobro,aux2[2]);
+			printf("aux2= %s\n %s\n %s\ndesloca=%d\n",aux2[0],aux2[1],aux2[2],desloca);
 			do{	
-				Operacao(6,iner,aux,aux2);
-				if(negative&&desloca>0){
-					deslocarDireita(aux,strlen(aux),1);
+				memcpy(aux,iner,sizeof(aux));
+				Operacao(6,aux,aux2[0],aux3);
+				printf("%d, %d, %d.\n",strlen(aux2[0]),strlen(aux2[1]),strlen(aux2[2]));
+				if(negative){
+					deslocarDireita(aux2[0],strlen(aux2[0]),1);
+					deslocarDireita(aux2[1],strlen(aux2[1]),1);
+					deslocarDireita(aux2[2],strlen(aux2[2]),1);
 					negative=false;
-					while(!negative){
-						Operacao(6,iner,aux,aux2);
-						memcpy(outer,aux2,strlen(aux2));
+				};
+				memset(aux3,0,sizeof(aux3));
+				Operacao(6,aux,aux2[0],aux3);//							1
+				if(!negative){
+					memcpy(aux,aux3,sizeof(aux));
+					memset(aux3,0,sizeof(aux3));
+					Operacao(6,aux,aux2[1],aux3);//						+2
+					if(negative){//										não
+						negative=false;
+						Operacao(6,aux,aux2[0],aux3);//					+1
+						if(negative){
+							negative=false;
+							printf("1:= %s\n",aux);
+							memcpy(iner,aux,sizeof(aux));//				1
+						}
+						else{
+							printf("2:= %s\n",aux3);
+							memcpy(iner,aux3,sizeof(aux3));//			sim 1+1=2;
+						}
 					}
-				}else if(desloca==0){
-					
+					else{//												3
+						memcpy(aux,aux3,sizeof(aux));
+						memset(aux3,0,sizeof(aux3));	
+						Operacao(6,aux,aux2[2],aux3);//                 +4
+						if(negative){//									não
+							negative=false;
+							Operacao(6,aux,aux2[1],aux3);//				+2
+							if(negative){//								não
+								negative=false;
+								Operacao(6,aux,aux2[0],aux3);//			+1
+								if(negative){//							não
+									printf("3:= %s\n",aux);							
+									negative=false;
+									memcpy(iner,aux,sizeof(aux));//		3;
+								}
+								else{//									sim	1+2+1=4;
+									printf("4:= %s\n",aux3);							
+									memcpy(iner,aux3,sizeof(aux3));
+								}
+							}
+							else{//										5
+								memcpy(aux,aux3,sizeof(aux));
+								memset(aux3,0,sizeof(aux3));
+								Operacao(6,aux,aux2[0],aux3);//			+1
+								if(negative){//							não
+									printf("5:= %s\n",aux);							
+									negative=false;
+									memcpy(iner,aux,sizeof(aux));//		5
+								}
+								else{//									sim 5+1=6;
+									printf("6:= %s\n",aux3);							
+									memcpy(iner,aux3,sizeof(aux3));
+								}
+							}
+						}
+						else{//											7
+							memcpy(aux,aux3,sizeof(aux));
+							memset(aux3,0,sizeof(aux3));
+							Operacao(6,aux,aux2[1],aux3);//			   	+2
+							if(negative){//								não
+								negative=false;
+								Operacao(6,aux,aux2[0],aux3);//		   	+1
+								if(negative){//							não 7+0=7
+									printf("7:= %s\n",aux);							
+									negative=false;
+									memcpy(iner,aux,sizeof(aux));
+								}
+								else{// 								sim: 7+1=8
+									printf("8:= %s\n",aux3);							
+									memcpy(iner,aux3,sizeof(aux3));
+								}
+							}
+							else{ // 					 				sim: 7+2=9
+								printf("9:= %s\n",aux3);							
+								memcpy(iner,aux3,sizeof(aux3));
+							}	
+						}
+					}
 				}
-			}while(desloca--);
+				//printf("%s,%d.\n",iner,desloca);
+				desloca--;
+			}while(desloca>0);
+			//printf("%s,%s.\n",aux,aux3);
+			Operacao(1,iner,Zero,outer);
 			break;
 		}		
 		case 4:{ //Exponenciação soma e mult
