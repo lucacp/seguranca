@@ -160,7 +160,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			do{	
 				Operacao(6,iner,aux2[0],aux3);
 				//printf("%d, %d, %d.\n",strlen(aux2[0]),strlen(aux2[1]),strlen(aux2[2]));
-				if(negative){
+				if(negative&&desloca>0){
 					deslocarDireita(aux2[0],strlen(aux2[0]),1);
 					deslocarDireita(aux2[1],strlen(aux2[1]),1);
 					deslocarDireita(aux2[2],strlen(aux2[2]),1);
