@@ -160,8 +160,8 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			//printf("aux2= %s\n %s\n %s\ndesloca=%d\n",aux2[0],aux2[1],aux2[2],desloca);
 			do{	
 				Operacao(6,iner,aux2[0],aux3);
-				//printf("%d, %d, %d.\n",strlen(aux2[0]),strlen(aux2[1]),strlen(aux2[2]));
-				if(negative&&desloca>0){
+				//printf("%s, %s, %s.\n",aux2[0],aux2[1],aux2[2]);
+				if(negative&&(desloca>0||aux2[0][0]=='0')){
 					deslocarDireita(aux2[0],strlen(aux2[0]),1);
 					deslocarDireita(aux2[1],strlen(aux2[1]),1);
 					deslocarDireita(aux2[2],strlen(aux2[2]),1);
@@ -169,6 +169,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				};
 				memset(aux3,0,sizeof(aux3));
 				Operacao(6,iner,aux2[0],aux3);//							1
+				//printf("%s !  ",aux3);
 				if(!negative){
 					memcpy(iner,aux3,sizeof(aux3));
 					memset(aux3,0,sizeof(aux3));
@@ -247,7 +248,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				}
 				//printf("%s,%d.\n",iner,desloca);
 				desloca--;
-			}while(desloca>0);
+			}while(desloca>=0);
 			//printf("%s,%s.\n",iner,aux3);
 			Operacao(1,iner,Zero,outer);
 			break;
@@ -396,8 +397,8 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			//printf("aux2= %s\n %s\n %s\ndesloca=%d\n",aux2[0],aux2[1],aux2[2],desloca);
 			do{	
 				Operacao(6,iner,aux2[0],aux3);
-				//printf("%d, %d, %d.\n",strlen(aux2[0]),strlen(aux2[1]),strlen(aux2[2]));
-				if(negative&&desloca>0){
+				//printf("%s, %s, %s.\n",aux2[0],aux2[1],aux2[2]);
+				if(negative&&(desloca>0||aux2[0][0]=='0')){
 					negative=false;
 					deslocarDireita(aux2[0],strlen(aux2[0]),1);
 					deslocarDireita(aux2[1],strlen(aux2[1]),1);
@@ -405,6 +406,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				}else if(desloca==0&&negative)	outer[pos++]=aux[0];
 				memset(aux3,0,sizeof(aux3));
 				Operacao(6,iner,aux2[0],aux3);//							1
+				//printf("%s !   ",aux3);
 				if(!negative){
 					memcpy(iner,aux3,sizeof(aux3));
 					memset(aux3,0,sizeof(aux3));
@@ -488,7 +490,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				}
 				//printf("%s,%d.\n",iner,desloca);
 				desloca--;
-			}while(desloca>0);
+			}while(desloca>=0);
 			//printf("%s,%s.\n",iner,aux3);
 			//Operacao(1,iner,Zero,outer);
 			break;		
