@@ -99,50 +99,60 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			 * ou seja, será multiplicado os ultimos numeros( unidades ) colocando os por primeiro na saida
 			 * após será invertido sua ordem.
 			 * alterado para ja ter invertido a ordem logo de começo!
+			 * até pelo numero 2^63 está 100% certo porem para 2^64 endiante está dando diferenças!
 			 * */
 			char aux[MAX];
 			memset(aux,0,sizeof(aux));
-			nouter2=strlen(iner);int casa=0,casas=strlen(iner2);
+			nouter2=niner;
+			int casa=0,casas=niner2;
 			for(nouter1=0;nouter1<nouter2;nouter1++){
 				outer[nouter1]=((iner[nouter1]-'0')*(iner2[casa]-'0'));
 			}
 			for(nouter1=0;nouter1<nouter2+1;nouter1++){
 				if(outer[nouter1]>=10){
 					if(nouter1+1==nouter2+1)
-						outer[nouter1+1]+=outer[nouter1]/10+'0';
+						outer[nouter1+1]+=(outer[nouter1]/10)+'0';
 					else
 						outer[nouter1+1]+=outer[nouter1]/10;
-					outer[nouter1]=(outer[nouter1]%10)+'0';
+					outer[nouter1]-=(outer[nouter1]/10*10);
+					outer[nouter1]+='0';
 				}
 				else
 					outer[nouter1]+='0';
 			};
-			zeroEsquerda(outer,sizeof(outer));
+			//zeroEsquerda(outer,sizeof(outer));
 			for(casa=1;casa<casas;casa++){
+				//printf("cs: %d\n",casa);
+				nouter2=niner;
 				for(nouter1=0;nouter1<nouter2+casa;nouter1++){
-					if(nouter1>=casa)
+					if(nouter1>=casa){
 						aux[nouter1]=((iner[nouter1-casa]-'0')*(iner2[casa]-'0'));
+					}
 					else
 						aux[nouter1]='0';
 				}
-				nouter2=strlen(iner);
+				//printf("outer:! %s !\n",outer);
 				for(nouter1=casa;nouter1<nouter2+casa+1;nouter1++){
 					if(aux[nouter1]>=10){
-						if(nouter1+1<nouter2+casa+1)
+						if(nouter1+1<nouter2+casa+1){
 							aux[nouter1+1]+=aux[nouter1]/10;
-						else
+						}
+						else{
 							aux[nouter1+1]+=aux[nouter1]/10+'0';
-						aux[nouter1]=(aux[nouter1]%10)+'0';
+						}
+						aux[nouter1]-=(aux[nouter1]/10*10);
+						aux[nouter1]+='0';
 					}else
 						aux[nouter1]+='0';
+					
 				}
-				
-				//printf("%s\n%s;\n",outer,aux);
+				//printf("%d: %s ",casa,aux);
+				//printf("%s\n",outer);
 				Operacao(1,outer,aux,outer);
 				//memcpy(outer,iner2,strlen(iner2)+1);
 				//zeroEsquerda(outer,sizeof(outer));
 				//printf("mult:%s\n",outer);
-				//memset(aux,0,strlen(aux)+2);
+				//memset(aux,0,sizeof(aux));
 			};
 			break;
 		}
