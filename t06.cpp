@@ -10,12 +10,16 @@ bool negative=false;
 void zeroEsquerda(char *campo,int tam){
 	int n=tam,i=0;
 	if(!negative) i++;
+	//printf("%d por %d ini %d\n",tam,n,i);
 	for(n=tam;n>=i;n--){
 		if(campo[n]<='0'){
+			//printf("%d: %s\n",n,campo);
 			campo[n]=0;
 		}
-		else
+		else{
+			//printf("%d: %c, %s\n",n,campo[n],campo);
 			return;
+		}
 	}
 }
 void deslocarDireita(char *campo,int tam,int casas){
@@ -29,6 +33,7 @@ void inverter(char *campo,int tam){
 	int n=tam,i=0;
 	char aux[tam];
 	memset(aux,0,sizeof(aux));
+	//printf("%d\n",tam);
 	for(;n>0;n--,i++){
 		aux[i]=campo[n-1];
 	}
@@ -36,10 +41,10 @@ void inverter(char *campo,int tam){
 		for(i=1,n=strlen(campo);i<n;i++){
 			campo[i]=aux[i];
 		}
-		else
-			for(i=0,n=tam;i<n;i++){
-				campo[i]=aux[i];
-			}
+	else
+		for(i=0,n=tam;i<n;i++){
+			campo[i]=aux[i];
+		}
 }
 
 void Operacao(int op,char *iner,char *iner2,char *outer){
@@ -81,12 +86,12 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 					else
 						outer[nouter1+1]='1';
 					outer[nouter1]-=10;
-				}/*else if(outer[nouter1]<'0'){
+				}else if(outer[nouter1]<'0'){
 					outer[nouter1]+='0';
-				}*/
+				}
 			};
-			//printf("%s\n",outer);
 			zeroEsquerda(outer,strlen(outer));
+			//printf("som: %s\n",outer);
 			break;
 		}
 		case 2:{ //MULTIPLICACAO
@@ -102,7 +107,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				outer[nouter1]=((iner[nouter1]-'0')*(iner2[casa]-'0'));
 			}
 			for(nouter1=0;nouter1<nouter2+1;nouter1++){
-				if(outer[nouter1]>10){
+				if(outer[nouter1]>=10){
 					if(nouter1+1==nouter2+1)
 						outer[nouter1+1]+=outer[nouter1]/10+'0';
 					else
@@ -115,24 +120,29 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			zeroEsquerda(outer,sizeof(outer));
 			for(casa=1;casa<casas;casa++){
 				for(nouter1=0;nouter1<nouter2+casa;nouter1++){
-					if(nouter1<casa)
-						aux[nouter1]='0';
-					else
+					if(nouter1>=casa)
 						aux[nouter1]=((iner[nouter1-casa]-'0')*(iner2[casa]-'0'));
+					else
+						aux[nouter1]='0';
 				}
 				nouter2=strlen(iner);
 				for(nouter1=casa;nouter1<nouter2+casa+1;nouter1++){
 					if(aux[nouter1]>=10){
 						if(nouter1+1<nouter2+casa+1)
 							aux[nouter1+1]+=aux[nouter1]/10;
+						else
+							aux[nouter1+1]+=aux[nouter1]/10+'0';
 						aux[nouter1]=(aux[nouter1]%10)+'0';
 					}else
 						aux[nouter1]+='0';
 				}
+				
+				//printf("%s\n%s;\n",outer,aux);
 				Operacao(1,outer,aux,outer);
-				//printf("%s\n",aux);
-				zeroEsquerda(outer,sizeof(outer));
-				memset(aux,0,sizeof(nouter2+1));
+				//memcpy(outer,iner2,strlen(iner2)+1);
+				//zeroEsquerda(outer,sizeof(outer));
+				//printf("mult:%s\n",outer);
+				//memset(aux,0,strlen(aux)+2);
 			};
 			break;
 		}
@@ -275,17 +285,19 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				for(nouter1=0;nouter1<23;nouter1++){
 					Operacao(6,iner2,itera[nouter1],aux);
 					if(negative){
-						iteracao=nouter1-1;
+						iteracao=nouter1;
 						nouter1=22;
 					}
 				}
 				Operacao(6,iner2,itera[iteracao],aux);
+				//printf("!%s!\n",aux);
 				memset(iner2,0,strlen(iner2));
 				Operacao(2,iner,iner,outer);
+				//printf("i %s i %d j\n",outer,iteracao);
 				for(nouter1=1;nouter1<iteracao;nouter1++){
 					memcpy(iner2,outer,strlen(outer));
-					getchar();
 					Operacao(2,iner2,iner2,outer);
+					//printf("i %s i\n",outer);
 				}
 			}
 			else{
