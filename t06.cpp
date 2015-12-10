@@ -256,11 +256,39 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			if(niner2==1&&iner2[0]=='0'){
 				outer[0]='1';
 				return;
-			}else
-			if(niner2==1&&iner2[0]=='1'){
+			}
+			else if(niner2==1&&iner2[0]=='1'){
 				iner2[0]='0';
-				Operacao(1,iner,iner2,outer);
-				return;
+				memcpy(outer,iner,strlen(iner)+1);
+				return;}
+			// Apartir daqui começa as exponenciações!
+			char itera[23][8]={"2","4","8","61","23","46","821","652","215","4201","8402","6904","2918",
+						   "48361","86723","63556","270131","441262","882425","6758401","2517902",
+						   "4034914","8068838"};//2¹ até 2²³
+			int iteracao=23,tamanho=strlen(iner2);
+			char aux[strlen(iner2)+1],aux2[strlen(iner)+2];
+			memset(aux,0,sizeof(aux));
+			memset(aux2,0,sizeof(aux2));
+			if(tamanho<8){
+				negative=false;
+				for(nouter1=0;nouter1<23;nouter1++){
+					Operacao(6,iner2,itera[nouter1],aux);
+					if(negative){
+						iteracao=nouter1-1;
+						nouter1=22;
+					}
+				}
+				Operacao(6,iner2,itera[iteracao],aux);
+				memset(iner2,0,strlen(iner2));
+				Operacao(2,iner,iner,outer);
+				for(nouter1=1;nouter1<iteracao;nouter1++){
+					memcpy(iner2,outer,strlen(outer));
+					getchar();
+					Operacao(2,iner2,iner2,outer);
+				}
+			}
+			else{
+			
 			}
 			
 			break;
