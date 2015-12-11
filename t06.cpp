@@ -298,7 +298,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 					Operacao(6,iner2,itera[nouter1],aux);
 					
 					if(negative){
-						if(nouter1==0){ impar=true;break;}
+						if(iner2[0]=='1'){ impar=true; break;}
 						negative=false;
 						iteracao[niteracao]=nouter1-1;
 						Operacao(6,iner2,itera[nouter1-1],outer);
@@ -307,28 +307,33 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 						memcpy(iner2,outer,strlen(outer));
 					}
 					else{
-						printf("%d: i2 %s out %s\n",nouter1,iner2,outer);
+						//printf("%d: i2 %s out %s aux %s\n",nouter1,iner2,outer,aux);
 						nouter1++;
 					}
 				}
-				printf("! %s ! %s !\n",aux,iner2);
+				//printf("! %s ! %s ! %s !\n",aux,iner2,outer);
+				for (nouter1=0;nouter1<niteracao;nouter1++) printf("@ %d ",iteracao[nouter1]);
+				//printf("@.\n");
 				memset(iner2,0,strlen(iner2));
-				printf("i %s i %d j\n",outer,niteracao);
+				//printf("i %s i %d j\n",outer,niteracao);
+				Operacao(2,iner,iner,outer);
 				for(nouter2=0;nouter2<niteracao;nouter2++){
-					Operacao(2,iner,iner,outer);
+					printf("%d : It %s Ite %s IteR\n",nouter2,outer,iner);
 					for(nouter1=0;nouter1<iteracao[nouter2];nouter1++){
 						memcpy(iner2,outer,strlen(outer));
 						Operacao(2,iner2,iner2,outer);
-						
+						printf("n %d : I %s Ie %s IeR\n",nouter1,outer,iner2);
 					}
-					if(nouter2==0) 	
+					if(nouter2==0)
 						memcpy(aux2,outer,strlen(outer));
 					else{ 			
 						memset(iner2,0,strlen(iner2));		
 						Operacao(2,aux2,outer,iner2);
+						printf("se %d: x2 %s out %s\n",nouter2,aux2,outer);
 						memcpy(aux2,iner2,strlen(iner2));
 					}
 				}
+				memset(iner2,0,strlen(iner2)+1);
 				memcpy(outer,aux2,strlen(aux2));
 				if(impar){
 					impar=false;
