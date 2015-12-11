@@ -294,21 +294,24 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			bool impar=false;
 			if(tamanho<8){
 				negative=false;
-				for(nouter1=0;niteracao<23&&nouter1<23;nouter1++){
+				for(nouter1=0;nouter1<23&&(iner2[0]!='0'||strlen(iner2)>1);){
 					Operacao(6,iner2,itera[nouter1],aux);
+					
 					if(negative){
 						if(nouter1==0){ impar=true;break;}
 						negative=false;
-						iteracao[niteracao]=nouter1;
-						Operacao(6,iner2,itera[nouter1],outer);
-						nouter1=-1;
+						iteracao[niteracao]=nouter1-1;
+						Operacao(6,iner2,itera[nouter1-1],outer);
+						nouter1=0;
 						niteracao++;
 						memcpy(iner2,outer,strlen(outer));
 					}
-					else
+					else{
 						printf("%d: i2 %s out %s\n",nouter1,iner2,outer);
+						nouter1++;
+					}
 				}
-				//printf("!%s!\n",aux);
+				printf("! %s ! %s !\n",aux,iner2);
 				memset(iner2,0,strlen(iner2));
 				printf("i %s i %d j\n",outer,niteracao);
 				for(nouter2=0;nouter2<niteracao;nouter2++){
