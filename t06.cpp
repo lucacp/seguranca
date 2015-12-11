@@ -286,33 +286,54 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			char itera[23][8]={"2","4","8","61","23","46","821","652","215","4201","8402","6904","2918",
 						   "48361","86723","63556","270131","441262","882425","6758401","2517902",
 						   "4034914","8068838"};//2¹ até 2²³
-			int iteracao=23,tamanho=strlen(iner2);
-			char aux[strlen(iner2)+1],aux2[strlen(iner)+2];
+			// expoentes maiores que  9999999 não serão processados, pois fica muito lento!
+			int iteracao[23],niteracao=0,tamanho=niner2;
+			char aux[strlen(iner2)+1],aux2[MAX];
 			memset(aux,0,sizeof(aux));
 			memset(aux2,0,sizeof(aux2));
+			bool impar=false;
 			if(tamanho<8){
 				negative=false;
-				for(nouter1=0;nouter1<23;nouter1++){
+				for(nouter1=0;niteracao<23&&nouter1<23;nouter1++){
 					Operacao(6,iner2,itera[nouter1],aux);
 					if(negative){
-						iteracao=nouter1;
-						nouter1=22;
+						if(nouter1==0){ impar=true;break;}
+						negative=false;
+						iteracao[niteracao]=nouter1;
+						Operacao(6,iner2,itera[nouter1],outer);
+						nouter1=-1;
+						niteracao++;
+						memcpy(iner2,outer,strlen(outer));
 					}
+					else
+						printf("%d: i2 %s out %s\n",nouter1,iner2,outer);
 				}
-				Operacao(6,iner2,itera[iteracao],aux);
 				//printf("!%s!\n",aux);
 				memset(iner2,0,strlen(iner2));
-				Operacao(2,iner,iner,outer);
-				//printf("i %s i %d j\n",outer,iteracao);
-				for(nouter1=1;nouter1<iteracao;nouter1++){
-					memcpy(iner2,outer,strlen(outer));
-					Operacao(2,iner2,iner2,outer);
-					//printf("i %s i\n",outer);
+				printf("i %s i %d j\n",outer,niteracao);
+				for(nouter2=0;nouter2<niteracao;nouter2++){
+					Operacao(2,iner,iner,outer);
+					for(nouter1=0;nouter1<iteracao[nouter2];nouter1++){
+						memcpy(iner2,outer,strlen(outer));
+						Operacao(2,iner2,iner2,outer);
+						
+					}
+					if(nouter2==0) 	
+						memcpy(aux2,outer,strlen(outer));
+					else{ 			
+						memset(iner2,0,strlen(iner2));		
+						Operacao(2,aux2,outer,iner2);
+						memcpy(aux2,iner2,strlen(iner2));
+					}
 				}
-			}
-			else{
-			
-			}
+				memcpy(outer,aux2,strlen(aux2));
+				if(impar){
+					impar=false;
+					Operacao(2,iner,outer,iner2);
+				}
+				memcpy(outer,iner2,strlen(iner2));
+				
+			};//tamanho<8
 			
 			break;
 		}		
