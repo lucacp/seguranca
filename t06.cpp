@@ -105,7 +105,9 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			memset(aux,0,sizeof(aux));
 			nouter2=niner;
 			int casa=0,casas=niner2;
-			if(strlen(iner2)==1&&iner2[0]=='0'){ outer[0]='0'; break;}
+			if(strlen(iner)==1&&iner[0]=='0'){ outer[0]='0'; break;}
+			else if(strlen(iner2)==1&&iner2[0]=='0'){ outer[0]='0'; break;}
+			else if(strlen(iner)==1&&iner[0]=='1'){ memcpy(outer,iner2,strlen(iner2)+1); break;}
 			else if(strlen(iner2)==1&&iner2[0]=='1'){ memcpy(outer,iner,strlen(iner)+1); break;}
 			for(nouter1=0;nouter1<nouter2;nouter1++){
 				outer[nouter1]=((iner[nouter1]-'0')*(iner2[casa]-'0'));
