@@ -166,9 +166,11 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			 * nesta "case 3:" será unicamente o resto!
 			 * o quociente sera na "case 7:"
 			 * */
-			char aux2[3][strlen(iner)*2],aux3[strlen(iner)];
+			char aux2[3][strlen(iner)*2],aux3[strlen(iner)],inerF[strlen(iner)+1];
 			memset(aux3,0,sizeof(aux3));
 			memset(aux2,0,sizeof(aux2));
+			memset(inerF,0,sizeof(inerF));
+			memcpy(inerF,iner,strlen(iner)+1);
 			int casas=niner2,desloca=niner-niner2,i=0;
 			for(i=0;i<desloca;i++){
 				aux2[0][i]='0';
@@ -273,6 +275,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			}while(desloca>=0);
 			//printf("%s,%s.\n",iner,aux3);
 			Operacao(1,iner,Zero,outer);
+			memcpy(iner,inerF,strlen(inerF)+1);
 			break;
 		}		
 		case 4:{ //Exponenciação soma e mult
@@ -370,9 +373,13 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			memset(Y3,0,sizeof(Y3));
 			memset(div,0,sizeof(div));
 			bool negaX=false,negaY=false;
+			memcpy(div,iner,strlen(iner)+1);
 			Operacao(3,iner,iner2,aux);
-			while(strlen(aux)>=1&&aux[0]!='0'){
+			memcpy(iner,div,strlen(iner)+1);
+			while(strlen(aux)>1||aux[0]!='0'){
 				Operacao(7,iner,iner2,div);
+				printf("a: %s . b: %s . c: %s . d: %s .\n",iner,iner2,aux,div);
+				
 				//memcpy(tem,iner,strlen(iner)+1); como ja possuo o resto na string 'aux' não vou utilizar o tem agora.
 				memcpy(iner,iner2,strlen(iner2)+2);
 				memcpy(iner2,aux,strlen(iner2)+1);
@@ -418,10 +425,23 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 				
 				memcpy(X1,X3,sizeof(X3));
 				memcpy(Y1,Y3,sizeof(Y3));
-				
+				printf("x: %s , %s . y: %s , %s .\n",X0,X1,Y0,Y1);
+				printf("3: %s , %s . 3: %s , %s .\n",X2,X3,Y2,Y3);
 				
 				Operacao(3,iner,iner2,aux);//ultimo comando do loop caso contrario não vai sair do while!.
 			}
+			for(nouter1=0;nouter1<(int)strlen(iner2);nouter1++)
+				outer[nouter1]=iner2[nouter1];
+			if(negaX)	outer[strlen(outer)]='-';
+			outer[strlen(outer)]=',';
+			for(nouter1=strlen(outer),nouter2=0;nouter2<(int)strlen(X1);nouter1++,nouter2++)
+				outer[nouter1]=X1[nouter2];
+			
+			if(negaY)	outer[strlen(outer)]='-';
+			outer[strlen(outer)]=',';
+			for(nouter1=strlen(outer),nouter2=0;nouter2<(int)strlen(Y1);nouter1++,nouter2++)
+				outer[nouter1]=Y1[nouter2];
+			
 			break;
 		}
 		case 6:{ //subtração 
@@ -505,9 +525,11 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			 * nesta "case 7:" será unicamente o quociente!
 			 * o resto sera na "case 3:"
 			 * */
-			char aux2[3][strlen(iner)*2],aux3[strlen(iner)],aux[]="0123456789";
+			char aux2[3][strlen(iner)*2],aux3[strlen(iner)],aux[]="0123456789",inerF[strlen(iner)+1];
 			memset(aux3,0,sizeof(aux3));
 			memset(aux2,0,sizeof(aux2));
+			memset(inerF,0,sizeof(inerF));
+			memcpy(inerF,iner,strlen(iner)+1);
 			int casas=niner2,desloca=niner-niner2,i=0,pos=0;
 			for(i=0;i<desloca;i++){
 				aux2[0][i]='0';
@@ -617,6 +639,7 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			}while(desloca>=0);
 			//printf("%s,%s.\n",iner,aux3);
 			//Operacao(1,iner,Zero,outer);
+			memcpy(iner,inerF,strlen(inerF)+1);
 			break;		
 		};
 	}
@@ -635,7 +658,7 @@ int main(int argc,char* args[]){
 	getchar();
 	//printf("\n1-soma\n2-multiplicacao\n3-divisao-resto\n4-exponenciacao(incompleta)\n5-inversa-multiplicativa(incompleta)\n6-subtracao\n7-divisao-quociente(incompleta)\ndigite sua operacao: ");
 	scanf("%d",&op);
-	//printf("%s\n",iner);
+	printf("%s\n",iner);
 	inverter(iner,strlen(iner));
 	//printf("%s\n",iner);
 	//printf("%s\n",iner2);
