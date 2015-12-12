@@ -105,6 +105,8 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			memset(aux,0,sizeof(aux));
 			nouter2=niner;
 			int casa=0,casas=niner2;
+			if(strlen(iner2)==1&&iner2[0]=='0'){ outer[0]='0'; break;}
+			else if(strlen(iner2)==1&&iner2[0]=='1'){ memcpy(outer,iner,strlen(iner)+1); break;}
 			for(nouter1=0;nouter1<nouter2;nouter1++){
 				outer[nouter1]=((iner[nouter1]-'0')*(iner2[casa]-'0'));
 			}
@@ -359,10 +361,67 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 		x[0] = x[1]; x[1] = X;
 		y[0] = y[1]; y[1] = Y;
 	} *mdc = b; *alpha = x[1]; *beta = y[1];**/
-			char X0[10]="1",X1[10]="0",Y0[10]="0",Y1[10]="1",aux[strlen(iner)+5];
+			char X0[10]="1",X1[10]="0",Y0[10]="0",Y1[10]="1",X2[strlen(iner)+5],Y2[strlen(iner)+5],aux[strlen(iner)+5],tem[strlen(iner)+2],X3[strlen(iner)+2],Y3[strlen(iner)+2],div[strlen(iner)+2];
 			memset(aux,0,sizeof(aux));
-			
-			
+			memset(tem,0,sizeof(tem));
+			memset(X2,0,sizeof(X2));
+			memset(Y2,0,sizeof(Y2));
+			memset(X3,0,sizeof(X3));
+			memset(Y3,0,sizeof(Y3));
+			memset(div,0,sizeof(div));
+			bool negaX=false,negaY=false;
+			Operacao(3,iner,iner2,aux);
+			while(strlen(aux)>=1&&aux[0]!='0'){
+				Operacao(7,iner,iner2,div);
+				//memcpy(tem,iner,strlen(iner)+1); como ja possuo o resto na string 'aux' não vou utilizar o tem agora.
+				memcpy(iner,iner2,strlen(iner2)+2);
+				memcpy(iner2,aux,strlen(iner2)+1);
+				
+				Operacao(2,X1,div,X2);
+				Operacao(2,Y1,div,Y2);
+				
+				if(!negaX){
+					Operacao(6,X0,X2,X3);
+					if(negative){
+						negative=false;
+						negaX=true;
+						Operacao(6,X2,X0,X3);
+					}
+				}
+				else{
+					Operacao(6,X2,X0,X3);
+					if(negative){
+						negative=false;
+						negaX=false;
+						Operacao(6,X0,X2,X3);
+					}
+				}
+				if(!negaY){
+					Operacao(6,Y0,Y2,Y3);
+					if(negative){
+						negative=false;
+						negaY=true;
+						Operacao(6,Y2,Y0,Y3);
+					}
+				}
+				else{
+					Operacao(6,Y2,Y0,Y3);
+					if(negative){
+						negative=false;
+						negaY=false;
+						Operacao(6,Y0,Y2,Y3);
+					}
+				}
+				
+				memcpy(X0,X1,sizeof(X1));
+				memcpy(Y0,Y1,sizeof(Y1));
+				
+				memcpy(X1,X3,sizeof(X3));
+				memcpy(Y1,Y3,sizeof(Y3));
+				
+				
+				Operacao(3,iner,iner2,aux);//ultimo comando do loop caso contrario não vai sair do while!.
+			}
 			break;
 		}
 		case 6:{ //subtração 
