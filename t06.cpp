@@ -348,7 +348,19 @@ void Operacao(int op,char *iner,char *iner2,char *outer){
 			break;
 		}		
 		case 5:{ //inverso multiplicativo (subtração + divisão + soma + multi)
-			
+	// Função base para o inverso multiplicativo
+	/**int a, int b, int *alpha, int *beta, int *mdc
+	int x[2] = {1, 0}; int y[2] = {0, 1};
+	while (a % b != 0) {
+		int quociente = a / b;
+		int temp = a; a = b; b = temp % b;
+		int X = x[0] - (x[1] * quociente);
+		int Y = y[0] - (y[1] * quociente);
+		x[0] = x[1]; x[1] = X;
+		y[0] = y[1]; y[1] = Y;
+	} *mdc = b; *alpha = x[1]; *beta = y[1];**/
+			char X0[10]="1",X1[10]="0",Y0[10]="0",Y1[10]="1",aux[strlen(iner)+5];
+			memset(aux,0,sizeof(aux));
 			
 			
 			break;
